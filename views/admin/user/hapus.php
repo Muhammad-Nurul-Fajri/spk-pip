@@ -1,15 +1,12 @@
 <?php
+session_start();
 require_once '../../../config/koneksi.php';
-
-if (!$koneksi) {
-    die("Koneksi database gagal: " . mysqli_connect_error());
-}
-
-$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
-
+require_role('admin');
+$id = intval($_GET['id'] ?? 0);
 if ($id > 0) {
-    mysqli_query($koneksi, "DELETE FROM users WHERE id = $id");
+    $stmt = mysqli_prepare($koneksi, "DELETE FROM users WHERE id=?");
+    mysqli_stmt_bind_param($stmt, "i", $id);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
 }
-
-header('Location: index.php');
-exit;
+header("Location: index.php"); exit;

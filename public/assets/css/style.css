@@ -1,0 +1,328 @@
+/* =============================================
+   SPK PIP — Global Stylesheet
+   Pondok Pesantren H. Maqbul Hasibuan
+   ============================================= */
+
+/* --- BASE --- */
+:root {
+    --primary: #4caf50;
+    --primary-dark: #388e3c;
+    --primary-light: #c6d166;
+    --bg: #f4f7f1;
+    --card-bg: #ffffff;
+    --text: #333333;
+    --text-muted: #777777;
+    --border: #d6e4d3;
+    --sidebar-w: 270px;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --shadow: 0 4px 12px rgba(0,0,0,0.05);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.04);
+    --transition: 0.3s ease;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+    background: var(--bg);
+    overflow-x: hidden;
+    color: var(--text);
+}
+a { text-decoration: none; color: inherit; }
+
+/* --- SIDEBAR --- */
+.sidebar {
+    width: var(--sidebar-w);
+    height: 100vh;
+    position: fixed;
+    left: 0; top: 0;
+    background: linear-gradient(180deg, var(--primary), var(--primary-light));
+    color: white;
+    overflow-y: auto;
+    z-index: 1040;
+    transition: transform var(--transition);
+}
+.sidebar::-webkit-scrollbar { width: 0; }
+.sidebar .logo { padding: 22px 18px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.15); }
+.sidebar .logo img { width: 80px; height: 80px; object-fit: contain; margin-bottom: 10px; }
+.sidebar .logo h4 { font-size: 13px; font-weight: bold; line-height: 1.5; margin-bottom: 5px; }
+.sidebar .logo p { font-size: 11px; margin: 0; opacity: 0.9; }
+.sidebar .menu { list-style: none; padding: 14px 0; margin: 0; }
+.sidebar .menu li a {
+    display: flex; align-items: center; gap: 12px;
+    padding: 13px 22px; color: white; font-size: 13.5px;
+    transition: background var(--transition);
+}
+.sidebar .menu li a:hover,
+.sidebar .menu li a.active { background: rgba(255,255,255,0.18); }
+.sidebar .menu li a i { width: 22px; text-align: center; font-size: 14px; }
+
+/* --- SIDEBAR OVERLAY (mobile) --- */
+.sidebar-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 1035;
+}
+.sidebar-overlay.show { display: block; }
+
+/* --- HAMBURGER TOGGLE --- */
+.sidebar-toggle {
+    display: none;
+    position: fixed; top: 14px; left: 14px;
+    z-index: 1050;
+    background: var(--primary); color: white;
+    border: none; border-radius: 8px;
+    width: 42px; height: 42px;
+    font-size: 18px; cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: var(--transition);
+}
+.sidebar-toggle:hover { background: var(--primary-dark); }
+
+/* --- CONTENT --- */
+.content {
+    margin-left: var(--sidebar-w);
+    padding: 22px;
+    min-height: 100vh;
+    transition: margin-left var(--transition);
+}
+
+/* --- NAVBAR --- */
+.navbar-custom {
+    background: var(--card-bg);
+    padding: 14px 22px; border-radius: var(--radius);
+    display: flex; justify-content: space-between; align-items: center;
+    box-shadow: var(--shadow);
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.page-title { display: flex; align-items: center; gap: 10px; }
+.page-title i { font-size: 20px; color: var(--primary); }
+.page-title h4 { margin: 0; font-size: 20px; font-weight: bold; color: var(--text); }
+.user-box { display: flex; align-items: center; gap: 10px; }
+.user-icon {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: #e8f5e9; color: var(--primary);
+    display: flex; justify-content: center; align-items: center;
+    font-size: 14px; border: 1px solid #c8e6c9;
+}
+.user-name { font-size: 13px; font-weight: bold; color: #555; }
+
+/* --- CARDS --- */
+.card-custom {
+    background: var(--card-bg);
+    border-radius: var(--radius); border: none;
+    box-shadow: var(--shadow-lg);
+    padding: 22px; margin-bottom: 22px;
+}
+
+/* --- TABLES --- */
+.table thead th {
+    background: var(--primary); color: white;
+    text-align: center; vertical-align: middle;
+    font-size: 13px; white-space: nowrap;
+}
+.table tbody td {
+    text-align: center; vertical-align: middle;
+    background: white; font-size: 13px;
+}
+.table tbody tr:hover td { background: #e8f5e9; }
+
+/* --- FORMS --- */
+.form-control, .form-select {
+    height: 42px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: #fafdf8; padding-left: 14px; font-size: 13px;
+}
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 0.15rem rgba(76,175,80,0.15);
+    background: white;
+}
+textarea.form-control { height: auto; min-height: 80px; }
+
+/* --- BUTTONS --- */
+.btn-simpan {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: white; border: none; border-radius: var(--radius-sm);
+    padding: 10px 24px; font-weight: bold; transition: var(--transition);
+    min-height: 44px;
+}
+.btn-simpan:hover { transform: translateY(-2px); box-shadow: 0 8px 15px rgba(46,125,50,0.2); color: white; }
+.btn-batal {
+    background: #6c757d; color: white; border: none; border-radius: var(--radius-sm);
+    padding: 10px 24px; font-weight: bold; min-height: 44px; transition: var(--transition);
+}
+.btn-batal:hover { background: #5a6268; color: white; }
+.btn-add {
+    background: var(--primary); color: white; border-radius: var(--radius-sm);
+    font-weight: bold; padding: 9px 18px; font-size: 13px;
+    border: none; transition: var(--transition); min-height: 44px;
+}
+.btn-add:hover { background: var(--primary-dark); color: white; }
+
+.btn-icon {
+    border: none; width: 32px; height: 32px; border-radius: 6px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 13px; transition: var(--transition); color: white;
+}
+.btn-icon.edit { background: #ffc107; }
+.btn-icon.edit:hover { background: #e0a800; }
+.btn-icon.delete { background: #dc3545; }
+.btn-icon.delete:hover { background: #c82333; }
+
+/* --- BADGES --- */
+.badge-benefit { background: #e8f5e9; color: #2e7d32; padding: 3px 8px; border-radius: 5px; font-size: 11px; }
+.badge-cost { background: #fce4ec; color: #c62828; padding: 3px 8px; border-radius: 5px; font-size: 11px; }
+.badge-status {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: bold;
+}
+.badge-draft { background: #e3f2fd; color: #1565c0; }
+.badge-submitted { background: #fff3e0; color: #e65100; }
+.badge-verified { background: #e8f5e9; color: #2e7d32; }
+.badge-processed { background: #f3e5f5; color: #7b1fa2; }
+.badge-accepted { background: #e8f5e9; color: #2e7d32; }
+.badge-rejected { background: #fce4ec; color: #c62828; }
+
+/* --- SUMMARY CARDS --- */
+.summary-card {
+    border-radius: var(--radius); padding: 20px; color: white;
+    position: relative; overflow: hidden; min-height: 110px;
+    display: flex; flex-direction: column; justify-content: center;
+}
+.summary-card .sc-icon {
+    position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
+    font-size: 40px; opacity: 0.2;
+}
+.summary-card h3 { font-size: 28px; font-weight: bold; margin-bottom: 4px; }
+.summary-card p { font-size: 13px; margin: 0; opacity: 0.9; }
+.sc-green { background: linear-gradient(135deg, #43a047, #66bb6a); }
+.sc-blue { background: linear-gradient(135deg, #1e88e5, #42a5f5); }
+.sc-orange { background: linear-gradient(135deg, #fb8c00, #ffa726); }
+.sc-red { background: linear-gradient(135deg, #e53935, #ef5350); }
+
+/* --- PROGRESS TRACKER --- */
+.progress-tracker {
+    display: flex; justify-content: space-between; position: relative;
+    padding: 0; margin: 30px 0;
+}
+.progress-tracker::before {
+    content: ''; position: absolute;
+    top: 20px; left: 12%; right: 12%;
+    height: 4px; background: #e0e0e0; z-index: 0;
+}
+.progress-step {
+    display: flex; flex-direction: column; align-items: center;
+    position: relative; z-index: 1; flex: 1;
+}
+.progress-step .step-circle {
+    width: 42px; height: 42px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: bold; font-size: 14px;
+    background: #e0e0e0; color: #999;
+    transition: var(--transition);
+    margin-bottom: 8px;
+}
+.progress-step.active .step-circle { background: var(--primary); color: white; }
+.progress-step.done .step-circle { background: #2e7d32; color: white; }
+.progress-step .step-label { font-size: 11px; text-align: center; color: var(--text-muted); max-width: 90px; }
+.progress-step.active .step-label,
+.progress-step.done .step-label { color: var(--text); font-weight: bold; }
+
+/* --- WELCOME BOX --- */
+.welcome-box {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    border-radius: 22px; padding: 40px; color: white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    margin-bottom: 25px;
+}
+.welcome-box h1 { text-align: center; font-size: 32px; font-weight: bold; margin-bottom: 18px; }
+.welcome-box .description { text-align: justify; font-size: 14px; line-height: 1.8; margin-bottom: 25px; }
+.welcome-box .school { text-align: center; font-size: 12px; opacity: 0.9; }
+
+/* --- MENU CARDS (admin dashboard) --- */
+.menu-card {
+    background: white; border-radius: var(--radius); padding: 20px;
+    position: relative; overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    transition: var(--transition); height: 100%; cursor: pointer;
+}
+.menu-card:hover { transform: translateY(-4px); }
+.menu-card::before {
+    content: ''; position: absolute; left: 0; top: 0;
+    width: 5px; height: 100%;
+}
+.border-green::before { background: #4caf50; }
+.border-blue::before { background: #2196f3; }
+.border-orange::before { background: #ff9800; }
+.border-red::before { background: #e91e63; }
+.border-purple::before { background: #7b1fa2; }
+.border-teal::before { background: #00897b; }
+.menu-card i.card-icon {
+    position: absolute; right: 18px; top: 18px;
+    font-size: 28px; color: #e5e7eb;
+}
+.menu-card h5 { font-size: 15px; font-weight: bold; margin-bottom: 6px; color: var(--text); }
+.menu-card p { font-size: 12px; color: var(--text-muted); margin: 0; }
+
+/* --- PRINT --- */
+@media print {
+    .sidebar, .navbar-custom, .sidebar-toggle, .sidebar-overlay, .no-print { display: none !important; }
+    .content { margin-left: 0 !important; padding: 10px !important; }
+    .card-custom { box-shadow: none !important; }
+}
+
+/* =============================================
+   RESPONSIVE BREAKPOINTS
+   ============================================= */
+
+/* TABLET: 577px – 992px */
+@media (max-width: 992px) {
+    .sidebar {
+        transform: translateX(-100%);
+        width: 270px;
+    }
+    .sidebar.show { transform: translateX(0); }
+    .sidebar-toggle { display: flex; align-items: center; justify-content: center; }
+    .content { margin-left: 0; padding-top: 65px; }
+    .navbar-custom { margin-top: 0; }
+    .page-title h4 { font-size: 17px; }
+
+    .summary-card h3 { font-size: 22px; }
+
+    .progress-tracker { gap: 4px; }
+    .progress-step .step-circle { width: 36px; height: 36px; font-size: 13px; }
+    .progress-step .step-label { font-size: 10px; }
+}
+
+/* MOBILE: ≤576px */
+@media (max-width: 576px) {
+    .content { padding: 12px; padding-top: 60px; }
+    .navbar-custom { padding: 10px 14px; border-radius: 12px; }
+    .page-title h4 { font-size: 15px; }
+    .card-custom { padding: 16px; border-radius: 12px; }
+
+    .welcome-box { padding: 22px; border-radius: 14px; }
+    .welcome-box h1 { font-size: 22px; }
+    .welcome-box .description { font-size: 13px; }
+
+    .summary-card { min-height: 90px; padding: 14px; }
+    .summary-card h3 { font-size: 20px; }
+    .summary-card p { font-size: 12px; }
+    .summary-card .sc-icon { font-size: 30px; }
+
+    .menu-card { padding: 16px; }
+    .menu-card h5 { font-size: 14px; }
+
+    .progress-tracker::before { top: 16px; left: 8%; right: 8%; }
+    .progress-step .step-circle { width: 32px; height: 32px; font-size: 12px; }
+    .progress-step .step-label { font-size: 9px; max-width: 60px; }
+
+    .btn-simpan, .btn-batal, .btn-add { padding: 8px 16px; font-size: 13px; }
+
+    /* Stack table headers on very small screens */
+    .table thead th, .table tbody td { font-size: 12px; padding: 6px 4px; }
+}

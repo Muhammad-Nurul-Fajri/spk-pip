@@ -404,6 +404,16 @@ body{
 
 }
 
+@media(max-width: 576px){
+    .login-box { width: 100%; border-radius: 0; min-height: 100vh; }
+    .left-side { height: 180px; padding: 20px; }
+    .left-side img { width: 100px; }
+    .left-side h2 { font-size: 18px; }
+    .left-side h3 { font-size: 13px; }
+    .form-box { width: 88%; }
+    .title { font-size: 22px; }
+}
+
 </style>
 
 </head>

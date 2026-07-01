@@ -1,306 +1,201 @@
 <?php
 session_start();
 require_once '../../config/koneksi.php';
-
-// Verification role
-if (!isset($_SESSION['level']) || $_SESSION['level'] != 'siswa') {
-    header("Location: ../../login.php");
-    exit;
-}
+require_role('siswa');
 
 $id_user = $_SESSION['id_user'];
 
 // Get student profile
-$query_siswa = mysqli_query($koneksi, "SELECT * FROM siswa WHERE id = $id_user");
-$siswa = mysqli_fetch_assoc($query_siswa);
+$stmt = mysqli_prepare($koneksi, "SELECT * FROM siswa WHERE id_user = ?");
+mysqli_stmt_bind_param($stmt, "i", $id_user);
+mysqli_stmt_execute($stmt);
+$siswa = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
+mysqli_stmt_close($stmt);
 
-// Get student penilaian values
-$query_penilaian = mysqli_query($koneksi, "
-    SELECT p.*, k.kode_kriteria, k.nama_kriteria, k.jenis
-    FROM penilaian p
-    JOIN kriteria k ON p.id_kriteria = k.id
-    WHERE p.id_siswa = $id_user
-    ORDER BY k.kode_kriteria ASC
-");
+// Get penilaian values
+$penilaian = [];
+if ($siswa) {
+    $pq = mysqli_prepare($koneksi, "SELECT p.nilai, k.kode_kriteria, k.nama_kriteria, k.jenis FROM penilaian p JOIN kriteria k ON p.id_kriteria=k.id WHERE p.id_siswa=? ORDER BY k.kode_kriteria");
+    mysqli_stmt_bind_param($pq, "i", $siswa['id']);
+    mysqli_stmt_execute($pq);
+    $pr = mysqli_stmt_get_result($pq);
+    while ($row = mysqli_fetch_assoc($pr)) $penilaian[] = $row;
+    mysqli_stmt_close($pq);
+}
 
-// Get student ranking
-$query_ranking = mysqli_query($koneksi, "
-    SELECT h.*, (SELECT COUNT(*) FROM hasil_wp) as total_peserta
-    FROM hasil_wp h
-    WHERE h.id_siswa = $id_user
-");
-$hasil = mysqli_fetch_assoc($query_ranking);
+// Get ranking result
+$hasil = null;
+if ($siswa) {
+    $hq = mysqli_prepare($koneksi, "SELECT h.*, (SELECT COUNT(*) FROM hasil_wp) as total_peserta FROM hasil_wp h WHERE h.id_siswa = ?");
+    mysqli_stmt_bind_param($hq, "i", $siswa['id']);
+    mysqli_stmt_execute($hq);
+    $hasil = mysqli_fetch_assoc(mysqli_stmt_get_result($hq));
+    mysqli_stmt_close($hq);
+}
+
+// Get announcements (latest 5)
+$pengumuman_list = [];
+$aq = mysqli_query($koneksi, "SELECT * FROM pengumuman ORDER BY created_at DESC LIMIT 5");
+while ($a = mysqli_fetch_assoc($aq)) $pengumuman_list[] = $a;
+
+// Session success message
+$success_msg = $_SESSION['pendaftaran_success'] ?? '';
+unset($_SESSION['pendaftaran_success']);
+
+// Status progression
+$status = $siswa['status_pendaftaran'] ?? 'draft';
+$status_map = [
+    'draft' => ['label' => 'Draft', 'step' => 1, 'badge' => 'badge-draft'],
+    'submitted' => ['label' => 'Diajukan', 'step' => 2, 'badge' => 'badge-submitted'],
+    'verified' => ['label' => 'Terverifikasi', 'step' => 3, 'badge' => 'badge-verified'],
+    'processed' => ['label' => 'Diproses Sistem', 'step' => 4, 'badge' => 'badge-processed'],
+    'accepted' => ['label' => 'Lolos Seleksi', 'step' => 5, 'badge' => 'badge-accepted'],
+    'rejected' => ['label' => 'Tidak Lolos', 'step' => 5, 'badge' => 'badge-rejected'],
+];
+$current = $status_map[$status] ?? $status_map['draft'];
+
+$page_title = 'Dashboard Siswa';
+$active_menu = 'dashboard';
+$asset_depth = 2;
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard Siswa</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
-}
-body {
-    background: #f4f7f1;
-    overflow-x: hidden;
-}
-.sidebar {
-    width: 270px;
-    height: 100vh;
-    position: fixed;
-    left: 0;
-    top: 0;
-    background: linear-gradient(180deg, #4caf50, #c6d166);
-    color: white;
-    overflow-y: auto;
-}
-.logo {
-    padding: 25px 20px;
-    text-align: center;
-    border-bottom: 1px solid rgba(255,255,255,0.15);
-}
-.logo img {
-    width: 95px;
-    height: 95px;
-    object-fit: contain;
-    margin-bottom: 12px;
-}
-.logo h4 {
-    font-size: 15px;
-    font-weight: bold;
-    line-height: 1.6;
-    margin-bottom: 8px;
-}
-.logo p {
-    font-size: 12px;
-    margin: 0;
-    opacity: 0.95;
-}
-.menu {
-    padding: 18px 0;
-    margin: 0;
-}
-.menu li {
-    list-style: none;
-}
-.menu li a {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 14px 24px;
-    color: white;
-    text-decoration: none;
-    font-size: 14px;
-    transition: 0.3s;
-}
-.menu li a:hover, .menu li a.active {
-    background: rgba(255,255,255,0.15);
-}
-.menu li a i {
-    width: 22px;
-    text-align: center;
-}
-.content {
-    margin-left: 270px;
-    padding: 22px;
-    min-height: 100vh;
-}
-.navbar-custom {
-    background: white;
-    padding: 16px 22px;
-    border-radius: 18px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    margin-bottom: 25px;
-}
-.page-title {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-.page-title i {
-    font-size: 22px;
-    color: #4caf50;
-}
-.page-title h4 {
-    margin: 0;
-    font-size: 23px;
-    font-weight: bold;
-    color: #333;
-}
-.user-box {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-.user-icon {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background: #e8f5e9;
-    color: #4caf50;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 16px;
-    border: 1px solid #c8e6c9;
-}
-.user-name {
-    font-size: 14px;
-    font-weight: bold;
-    color: #555;
-}
-.card-custom {
-    background: white;
-    border-radius: 18px;
-    border: none;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.04);
-    padding: 24px;
-    margin-bottom: 25px;
-}
-.welcome-card {
-    background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
-    border-left: 5px solid #4caf50;
-}
-.rank-badge {
-    font-size: 32px;
-    font-weight: bold;
-    color: #4caf50;
-    display: inline-block;
-    padding: 10px 20px;
-    background: #e8f5e9;
-    border-radius: 15px;
-    margin-bottom: 10px;
-}
-@media(max-width: 900px){
-    .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-    }
-    .content {
-        margin-left: 0;
-    }
-}
-</style>
+<?php include '../layouts/head.php'; ?>
 </head>
 <body>
-
-<div class="sidebar">
-    <div class="logo">
-        <img src="../../public/assets/img/logo.png">
-        <h4>Sistem Pendukung Keputusan Seleksi Penerima Bantuan PIP</h4>
-        <p>Pondok Pesantren Haji Maqbul Hasibuan</p>
-    </div>
-    <ul class="menu">
-        <li><a href="dashboard.php" class="active"><i class="fa fa-house"></i> Dashboard</a></li>
-        <li><a href="../../logout.php"><i class="fa fa-right-from-bracket"></i> Logout</a></li>
-    </ul>
-</div>
+<?php include '../layouts/sidebar_siswa.php'; ?>
 
 <div class="content">
     <div class="navbar-custom">
         <div class="page-title">
-            <i class="fa fa-user-graduate"></i>
+            <i class="fa fa-house"></i>
             <h4>Dashboard Siswa</h4>
         </div>
         <div class="user-box">
             <div class="user-icon"><i class="fa fa-user"></i></div>
-            <div class="user-name"><?php echo htmlspecialchars($siswa['nama']); ?></div>
+            <div class="user-name"><?php echo htmlspecialchars($_SESSION['nama'] ?? ''); ?></div>
         </div>
     </div>
 
-    <!-- WELCOME CARD -->
-    <div class="card-custom welcome-card">
-        <h5>Selamat Datang, <strong><?php echo htmlspecialchars($siswa['nama']); ?></strong>!</h5>
-        <p class="mb-0 text-muted">Berikut adalah informasi penilaian dan status penerimaan bantuan Program Indonesia Pintar (PIP) Anda.</p>
+    <?php if ($success_msg): ?>
+        <div class="alert alert-success" style="border-radius:10px;"><i class="fa fa-check-circle me-2"></i><?php echo $success_msg; ?></div>
+    <?php endif; ?>
+
+    <!-- STATUS & PROGRESS TRACKER -->
+    <div class="card-custom">
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-2">
+            <h5 style="font-weight:bold;color:var(--text);margin:0;">Status Pendaftaran</h5>
+            <span class="badge-status <?php echo $current['badge']; ?>">
+                <i class="fa fa-circle" style="font-size:8px;"></i> <?php echo $current['label']; ?>
+            </span>
+        </div>
+        <div class="progress-tracker">
+            <?php
+            $steps = [
+                ['icon' => '1', 'label' => 'Pendaftaran'],
+                ['icon' => '2', 'label' => 'Lengkapi Data'],
+                ['icon' => '3', 'label' => 'Verifikasi'],
+                ['icon' => '4', 'label' => 'Proses WP'],
+                ['icon' => '5', 'label' => 'Hasil'],
+            ];
+            foreach ($steps as $i => $s):
+                $step_num = $i + 1;
+                $class = '';
+                if ($step_num < $current['step']) $class = 'done';
+                elseif ($step_num == $current['step']) $class = 'active';
+            ?>
+            <div class="progress-step <?php echo $class; ?>">
+                <div class="step-circle">
+                    <?php if ($class === 'done'): ?><i class="fa fa-check"></i><?php else: echo $s['icon']; endif; ?>
+                </div>
+                <div class="step-label"><?php echo $s['label']; ?></div>
+            </div>
+            <?php endforeach; ?>
+        </div>
+
+        <?php if ($status === 'draft'): ?>
+            <div class="text-center mt-2">
+                <a href="pendaftaran.php" class="btn-simpan" style="display:inline-flex;align-items:center;gap:6px;">
+                    <i class="fa fa-file-pen"></i> Lengkapi Data Pendaftaran
+                </a>
+            </div>
+        <?php elseif ($status === 'submitted'): ?>
+            <div class="text-center mt-2">
+                <p class="text-muted small mb-2">Data sudah diajukan. Anda masih dapat mengedit sebelum diverifikasi admin.</p>
+                <a href="pendaftaran.php" class="btn-batal" style="display:inline-flex;align-items:center;gap:6px;">
+                    <i class="fa fa-edit"></i> Edit Data
+                </a>
+            </div>
+        <?php endif; ?>
     </div>
 
-    <div class="row">
-        <!-- STATUS SELEKSI -->
-        <div class="col-md-6">
-            <div class="card-custom text-center h-100">
-                <h5 class="mb-4">Status Penerimaan Bantuan PIP</h5>
-                
-                <?php if ($hasil): ?>
-                    <div class="rank-badge">
-                        Peringkat <?php echo $hasil['ranking']; ?> / <?php echo $hasil['total_peserta']; ?>
+    <div class="row g-3">
+        <!-- HASIL SELEKSI (if final) -->
+        <?php if ($status === 'accepted' || $status === 'rejected'): ?>
+        <div class="col-12">
+            <div class="card-custom" style="border-left: 5px solid <?php echo ($status==='accepted')?'#4caf50':'#e53935'; ?>;">
+                <div class="d-flex align-items-center gap-3">
+                    <div style="font-size:40px;color:<?php echo ($status==='accepted')?'#4caf50':'#e53935'; ?>;">
+                        <i class="fa <?php echo ($status==='accepted')?'fa-circle-check':'fa-circle-xmark'; ?>"></i>
                     </div>
-                    <p class="text-muted">Nilai Preferensi (V): <strong><?php echo number_format($hasil['nilai_v'], 5); ?></strong></p>
-                    
-                    <!-- Lolos Seleksi (Misal Top 3) -->
-                    <?php if ($hasil['ranking'] <= 3): ?>
-                        <div class="alert alert-success mt-3" role="alert">
-                            <i class="fa fa-circle-check me-2"></i>
-                            Selamat! Anda terpilih sebagai salah satu penerima bantuan PIP berdasarkan hasil perhitungan Weighted Product.
-                        </div>
-                    <?php else: ?>
-                        <div class="alert alert-warning mt-3" role="alert">
-                            <i class="fa fa-triangle-exclamation me-2"></i>
-                            Saat ini Anda berada di peringkat cadangan. Bantuan akan diberikan jika kuota bertambah atau ada penerima di atas yang mengundurkan diri.
-                        </div>
-                    <?php endif; ?>
-                    
-                <?php else: ?>
-                    <div class="py-4">
-                        <i class="fa fa-clock text-warning mb-3" style="font-size: 50px;"></i>
-                        <p class="lead">Perhitungan Belum Selesai</p>
-                        <p class="text-muted">Hasil akhir seleksi belum dipublikasikan oleh administrator. Silakan cek secara berkala.</p>
+                    <div>
+                        <h5 style="margin:0;font-weight:bold;"><?php echo ($status==='accepted')?'Selamat! Anda Lolos Seleksi PIP':'Maaf, Anda Belum Lolos Seleksi PIP'; ?></h5>
+                        <p class="text-muted mb-0 small"><?php echo ($status==='accepted')?'Anda telah ditetapkan sebagai penerima bantuan Program Indonesia Pintar.':'Berdasarkan hasil perhitungan metode Weighted Product, Anda belum memenuhi kriteria penerima PIP pada periode ini.'; ?></p>
                     </div>
-                <?php endif; ?>
+                </div>
             </div>
         </div>
+        <?php endif; ?>
 
-        <!-- DETAIL DATA DIRI -->
-        <div class="col-md-6">
-            <div class="card-custom h-100">
-                <h5 class="mb-4">Profil & Kriteria Penilaian</h5>
-                <table class="table table-borderless mb-4">
-                    <tr>
-                        <td width="35%" class="text-muted">Nama Lengkap</td>
-                        <td>: <strong><?php echo htmlspecialchars($siswa['nama']); ?></strong></td>
-                    </tr>
-                    <tr>
-                        <td class="text-muted">Kode Alternatif</td>
-                        <td>: <span class="badge bg-secondary"><?php echo htmlspecialchars($siswa['kode_alternatif']); ?></span></td>
-                    </tr>
-                    <tr>
-                        <td class="text-muted">Kelas</td>
-                        <td>: <?php echo htmlspecialchars($siswa['kelas']); ?></td>
-                    </tr>
-                </table>
-
-                <h6 class="border-bottom pb-2 mb-3">Nilai Parameter Kriteria:</h6>
+        <!-- DATA SUMMARY -->
+        <?php if ($siswa && $siswa['nis']): ?>
+        <div class="col-lg-7">
+            <div class="card-custom">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 style="font-weight:bold;color:var(--text);margin:0;"><i class="fa fa-id-card me-2" style="color:var(--primary);"></i>Ringkasan Data</h5>
+                    <?php if (in_array($status, ['draft','submitted'])): ?>
+                        <a href="pendaftaran.php" class="btn-add" style="font-size:12px;padding:6px 12px;"><i class="fa fa-edit me-1"></i>Edit</a>
+                    <?php endif; ?>
+                </div>
                 <div class="table-responsive">
-                    <table class="table table-striped table-sm">
-                        <thead>
-                            <tr>
-                                <th>Kriteria</th>
-                                <th class="text-center">Nilai Parameter</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php while ($row = mysqli_fetch_assoc($query_penilaian)): ?>
-                                <tr>
-                                    <td><?php echo htmlspecialchars($row['nama_kriteria']); ?> (<?php echo $row['kode_kriteria']; ?>)</td>
-                                    <td class="text-center"><strong><?php echo $row['nilai']; ?></strong></td>
-                                </tr>
-                            <?php endwhile; ?>
-                        </tbody>
+                    <table class="table table-borderless" style="font-size:13px;">
+                        <tr><td style="width:40%;color:#777;text-align:left;">Nama</td><td style="text-align:left;font-weight:bold;"><?php echo htmlspecialchars($siswa['nama']); ?></td></tr>
+                        <tr><td style="color:#777;text-align:left;">NIS / NISN</td><td style="text-align:left;"><?php echo htmlspecialchars($siswa['nis']); ?> / <?php echo htmlspecialchars($siswa['nisn'] ?? '-'); ?></td></tr>
+                        <tr><td style="color:#777;text-align:left;">Kelas</td><td style="text-align:left;"><?php echo htmlspecialchars($siswa['kelas']); ?></td></tr>
+                        <tr><td style="color:#777;text-align:left;">Pekerjaan Ortu</td><td style="text-align:left;"><?php echo htmlspecialchars($siswa['pekerjaan_ortu'] ?? '-'); ?></td></tr>
+                        <tr><td style="color:#777;text-align:left;">Penghasilan Ortu</td><td style="text-align:left;"><?php echo htmlspecialchars($siswa['penghasilan_ortu'] ?? '-'); ?></td></tr>
+                        <tr><td style="color:#777;text-align:left;">Tanggungan</td><td style="text-align:left;"><?php echo $siswa['jumlah_tanggungan'] ?? '-'; ?> orang</td></tr>
+                        <tr><td style="color:#777;text-align:left;">Kartu Kemiskinan</td><td style="text-align:left;"><?php echo htmlspecialchars($siswa['status_kartu_miskin'] ?? '-'); ?></td></tr>
+                        <tr><td style="color:#777;text-align:left;">Nilai Akhir</td><td style="text-align:left;"><?php echo $siswa['nilai_akhir_semester'] ?? '-'; ?></td></tr>
+                        <tr><td style="color:#777;text-align:left;">Hafalan Qur'an</td><td style="text-align:left;"><?php echo $siswa['hafalan_quran'] ?? 0; ?> Juz</td></tr>
                     </table>
                 </div>
+            </div>
+        </div>
+        <?php endif; ?>
+
+        <!-- PENGUMUMAN -->
+        <div class="<?php echo ($siswa && $siswa['nis']) ? 'col-lg-5' : 'col-12'; ?>">
+            <div class="card-custom">
+                <h5 style="font-weight:bold;color:var(--text);margin-bottom:14px;"><i class="fa fa-bullhorn me-2" style="color:#ff9800;"></i>Pengumuman Terbaru</h5>
+                <?php if (empty($pengumuman_list)): ?>
+                    <p class="text-muted small text-center py-3">Belum ada pengumuman.</p>
+                <?php else: ?>
+                    <?php foreach ($pengumuman_list as $p): ?>
+                    <div style="border-left:3px solid var(--primary);padding:10px 14px;margin-bottom:10px;background:#fafdf8;border-radius:0 8px 8px 0;">
+                        <h6 style="font-size:13px;font-weight:bold;margin-bottom:3px;"><?php echo htmlspecialchars($p['judul']); ?></h6>
+                        <p style="font-size:12px;color:#777;margin:0;"><?php echo mb_strimwidth(htmlspecialchars($p['isi']), 0, 120, '...'); ?></p>
+                        <small class="text-muted"><?php echo date('d M Y', strtotime($p['created_at'])); ?></small>
+                    </div>
+                    <?php endforeach; ?>
+                    <a href="pengumuman.php" class="d-block text-center mt-2" style="font-size:13px;color:var(--primary);font-weight:bold;">Lihat Semua →</a>
+                <?php endif; ?>
             </div>
         </div>
     </div>
 </div>
 
+<?php include '../layouts/footer.php'; ?>
 </body>
 </html>
