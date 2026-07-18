@@ -150,9 +150,9 @@ $asset_depth = 2;
     <div class="card-custom">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
             <h6 style="font-weight:bold;margin:0;"><i class="fa fa-trophy me-2" style="color:#ff9800;"></i>Perangkingan Penerima PIP</h6>
-            <button onclick="window.print()" class="btn-add no-print" style="font-size:12px;padding:8px 16px;">
+            <a href="laporan.php" class="btn-add no-print" style="font-size:12px;padding:8px 16px;">
                 <i class="fa fa-print me-1"></i> Cetak Laporan
-            </button>
+            </a>
         </div>
         <div class="table-responsive">
             <?php if (!empty($ranking_data)): ?>

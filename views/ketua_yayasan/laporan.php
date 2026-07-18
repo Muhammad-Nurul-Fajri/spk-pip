@@ -34,8 +34,15 @@ $asset_depth = 2;
             <i class="fa fa-file-lines"></i>
             <h4>Laporan Hasil Seleksi PIP</h4>
         </div>
-        <div class="d-flex gap-2">
-            <button onclick="window.print()" class="btn-add" style="font-size:12px;"><i class="fa fa-print me-1"></i> Cetak PDF</button>
+        <div class="d-flex gap-2 align-items-center">
+            <form action="cetak_pdf.php" method="GET" target="_blank" class="d-flex align-items-center gap-2">
+                <select name="filter" class="form-select" style="width: auto; height: 42px;">
+                    <option value="semua">Semua Status</option>
+                    <option value="layak">Layak</option>
+                    <option value="tidak_layak">Tidak Layak</option>
+                </select>
+                <button type="submit" class="btn-add"><i class="fa fa-file-pdf me-1"></i> Cetak PDF</button>
+            </form>
         </div>
     </div>
 
