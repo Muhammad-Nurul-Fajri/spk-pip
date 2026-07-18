@@ -29,4 +29,7 @@ $base_root   = $base_root ?? '../../../';
         <li><a href="<?php echo $base_admin; ?>pengumuman/index.php" <?php echo ($active_menu=='pengumuman')?'class="active"':''; ?>><i class="fa fa-bullhorn"></i> Pengumuman</a></li>
         <li><a href="<?php echo $base_root; ?>logout.php"><i class="fa fa-right-from-bracket"></i> Logout</a></li>
     </ul>
+    <div class="sidebar-footer text-center no-print" style="padding: 15px 10px; font-size: 11px; opacity: 0.75; border-top: 1px solid rgba(255,255,255,0.12); margin-top: auto; font-weight: 500; letter-spacing: 0.3px; line-height: 1.5; color: rgba(255,255,255,0.9);">
+        Rina Sopiana Hasibuan<br>NIM: 2217020006
+    </div>
 </div>
