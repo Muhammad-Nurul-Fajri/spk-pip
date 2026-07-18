@@ -149,8 +149,8 @@ while ($siswa = mysqli_fetch_assoc($siswa_list)): $id_s = $siswa['id'];
                     <?php endforeach; ?>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="border-radius:8px;">Batal</button>
-                    <button type="submit" class="btn btn-success" style="border-radius:8px;"><i class="fa fa-save me-1"></i>Simpan</button>
+                    <button type="button" class="btn btn-secondary-custom" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-success-custom"><i class="fa fa-save me-1"></i>Simpan</button>
                 </div>
             </form>
         </div>

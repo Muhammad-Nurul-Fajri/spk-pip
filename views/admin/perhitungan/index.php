@@ -61,10 +61,16 @@ if (isset($_GET['simpan']) && $_GET['simpan'] == 1 && !empty($vektor_v)) {
     mysqli_query($koneksi, "DELETE FROM hasil_wp");
     foreach ($vektor_v as $id_siswa => $v_val) {
         $s_val = $vektor_s[$id_siswa]; $r = $ranking[$id_siswa];
-        $st = mysqli_prepare($koneksi, "INSERT INTO hasil_wp (id_siswa, nilai_s, nilai_v, ranking) VALUES (?, ?, ?, ?)");
+        $st = mysqli_prepare($koneksi, "INSERT INTO hasil_wp (id_siswa, nilai_s, nilai_v, ranking, status_verifikasi) VALUES (?, ?, ?, ?, 'menunggu_penilaian')");
         mysqli_stmt_bind_param($st, "iddi", $id_siswa, $s_val, $v_val, $r);
         mysqli_stmt_execute($st);
         mysqli_stmt_close($st);
+
+        // Synchronize student status
+        $su = mysqli_prepare($koneksi, "UPDATE siswa SET status_pendaftaran='processed' WHERE id=?");
+        mysqli_stmt_bind_param($su, "i", $id_siswa);
+        mysqli_stmt_execute($su);
+        mysqli_stmt_close($su);
     }
     $pesan_sukses = 'Hasil perhitungan berhasil disimpan ke database!';
 }

@@ -64,24 +64,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Daftar Akun — SPK PIP</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
 body { min-height: 100vh; display: flex; justify-content: center; align-items: center; background: linear-gradient(135deg, #f5f9f2, #edf5e7); padding: 20px; }
 .register-box { width: 480px; background: white; border-radius: 22px; padding: 40px; box-shadow: 0 12px 30px rgba(0,0,0,0.08); }
 .register-box img { width: 80px; display: block; margin: 0 auto 10px; }
-.register-box h2 { text-align: center; color: #8aa12d; font-size: 24px; font-weight: bold; margin-bottom: 6px; }
+.register-box h2 { text-align: center; color: #2e7d32; font-size: 24px; font-weight: bold; margin-bottom: 6px; }
 .register-box p.sub { text-align: center; color: #777; font-size: 13px; margin-bottom: 24px; }
 .form-control { height: 44px; border-radius: 10px; border: 1px solid #d6e4d3; background: #fafdf8; padding-left: 14px; font-size: 13px; }
-.form-control:focus { border-color: #C6D166; box-shadow: 0 0 0 0.15rem rgba(76,175,80,0.15); background: white; }
-.btn-register-submit { width: 100%; height: 44px; border: none; border-radius: 10px; background: linear-gradient(135deg, #4caf50, #C6D166); color: white; font-size: 14px; font-weight: bold; transition: 0.3s; }
+.form-control:focus { border-color: #8bc34a; box-shadow: 0 0 0 0.15rem rgba(46,125,50,0.15); background: white; }
+.btn-register-submit { width: 100%; height: 44px; border: none; border-radius: 10px; background: linear-gradient(135deg, #2e7d32, #8bc34a); color: white; font-size: 14px; font-weight: bold; transition: 0.3s; }
 .btn-register-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 15px rgba(46,125,50,0.2); }
-.back-link { display: block; text-align: center; margin-top: 16px; color: #3762da; font-size: 13px; font-weight: 600; }
+.back-link { display: block; text-align: center; margin-top: 16px; color: #1565c0; font-size: 13px; font-weight: 600; }
 .back-link:hover { color: #1b5e20; }
 @media(max-width: 576px) { .register-box { width: 100%; padding: 25px 20px; border-radius: 14px; } }
 </style>
@@ -95,9 +98,23 @@ body { min-height: 100vh; display: flex; justify-content: center; align-items: c
 
     <?php if ($pesan_sukses): ?>
         <div class="alert alert-success" style="border-radius: 10px; font-size: 13px;">
-            <i class="fa fa-check-circle me-1"></i><?php echo $pesan_sukses; ?>
+            <i class="fa fa-check-circle me-1"></i><?php echo htmlspecialchars($pesan_sukses); ?>
             <br><a href="login.php" class="fw-bold">Klik di sini untuk login →</a>
         </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Pendaftaran Berhasil!',
+                    text: 'Pendaftaran berhasil. Silakan login menggunakan akun yang telah didaftarkan.',
+                    confirmButtonColor: '#2e7d32',
+                    timer: 3000,
+                    timerProgressBar: true
+                }).then(() => {
+                    window.location.href = 'login.php';
+                });
+            });
+        </script>
     <?php endif; ?>
     <?php if ($pesan_error): ?>
         <div class="alert alert-danger" style="border-radius: 10px; font-size: 13px;">

@@ -39,6 +39,20 @@ $asset_depth = 2;
         </div>
     </div>
 
+    <?php if (isset($_SESSION['verifikasi_success'])): ?>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: <?php echo json_encode($_SESSION['verifikasi_success']); ?>,
+                    confirmButtonColor: '#2e7d32'
+                });
+            });
+        </script>
+        <?php unset($_SESSION['verifikasi_success']); ?>
+    <?php endif; ?>
+
     <div class="print-header">
         <h3>PONDOK PESANTREN H. MAQBUL HASIBUAN</h3>
         <p>Sibuhuan, Padang Lawas — Sumatera Utara</p>
@@ -58,7 +72,8 @@ $asset_depth = 2;
                         <th>Kelas</th>
                         <th>Nilai S</th>
                         <th>Nilai V</th>
-                        <th>Keputusan</th>
+                        <th>Status Kelayakan</th>
+                        <th class="no-print" width="10%">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -67,11 +82,26 @@ $asset_depth = 2;
                         <td><?php echo $row['ranking']; ?></td>
                         <td><?php echo htmlspecialchars($row['kode_alternatif']); ?></td>
                         <td><?php echo htmlspecialchars($row['nis'] ?? '-'); ?></td>
-                        <td style="text-align:left;padding-left:12px;"><?php echo htmlspecialchars($row['nama']); ?></td>
+                        <td style="text-align:left;padding-left:12px;"><strong><?php echo htmlspecialchars($row['nama']); ?></strong></td>
                         <td><?php echo htmlspecialchars($row['kelas']); ?></td>
                         <td><?php echo number_format($row['nilai_s'], 5); ?></td>
                         <td><?php echo number_format($row['nilai_v'], 5); ?></td>
-                        <td><?php echo ($row['ranking'] <= 3) ? '<strong style="color:#2e7d32;">LAYAK</strong>' : '<span style="color:#e65100;">CADANGAN</span>'; ?></td>
+                        <td>
+                            <?php
+                            if ($row['status_verifikasi'] === 'menunggu_penilaian') {
+                                echo '<span class="badge-menunggu"><i class="bi bi-hourglass-split me-1"></i>Menunggu</span>';
+                            } elseif ($row['status_verifikasi'] === 'layak') {
+                                echo '<span class="badge-layak"><i class="bi bi-check-circle-fill me-1"></i>Layak</span>';
+                            } else {
+                                echo '<span class="badge-tidak-layak"><i class="bi bi-x-circle-fill me-1"></i>Tidak Layak</span>';
+                            }
+                            ?>
+                        </td>
+                        <td class="no-print">
+                            <a href="review.php?id=<?php echo $row['id_siswa']; ?>" class="btn btn-sm btn-info-custom py-1 px-2" style="font-size: 11px; min-height: auto;">
+                                <i class="fa fa-clipboard-check"></i> Review
+                            </a>
+                        </td>
                     </tr>
                     <?php endforeach; ?>
                 </tbody>

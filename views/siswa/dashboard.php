@@ -79,7 +79,16 @@ $asset_depth = 2;
     </div>
 
     <?php if ($success_msg): ?>
-        <div class="alert alert-success" style="border-radius:10px;"><i class="fa fa-check-circle me-2"></i><?php echo $success_msg; ?></div>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: <?php echo json_encode($success_msg); ?>,
+                    confirmButtonColor: '#2e7d32'
+                });
+            });
+        </script>
     <?php endif; ?>
 
     <!-- STATUS & PROGRESS TRACKER -->

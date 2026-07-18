@@ -77,7 +77,7 @@ $asset_depth = 3;
                             <a href="hapus.php?id=<?php echo $row['id']; ?>" class="btn-icon delete me-1" title="Hapus"
                                onclick="return confirm('Hapus siswa \'<?php echo htmlspecialchars($row['nama']); ?>\'?')"><i class="fa fa-trash"></i></a>
                             <?php if ($row['status_pendaftaran'] === 'submitted'): ?>
-                                <a href="index.php?verify=<?php echo $row['id']; ?>" class="btn-icon" style="background:#1e88e5;" title="Verifikasi"
+                                <a href="index.php?verify=<?php echo $row['id']; ?>" class="btn-icon verify" title="Verifikasi"
                                    onclick="return confirm('Verifikasi data siswa ini?')"><i class="fa fa-check"></i></a>
                             <?php endif; ?>
                         </td>

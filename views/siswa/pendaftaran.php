@@ -247,7 +247,7 @@ $asset_depth = 2;
                         <i class="fa fa-save me-1"></i> Simpan Draft
                     </button>
                     <button type="submit" name="action" value="submit" class="btn-simpan"
-                            onclick="return confirm('Apakah Anda yakin ingin mengajukan pendaftaran? Data yang sudah diajukan tidak dapat diubah.')">
+                            onclick="return confirm('Apakah Anda yakin ingin mengajukan pendaftaran? Setelah data diajukan dan diverifikasi admin, data tidak dapat diubah kembali.')">
                         <i class="fa fa-paper-plane me-1"></i> Ajukan Pendaftaran
                     </button>
                     <a href="dashboard.php" class="btn-batal">

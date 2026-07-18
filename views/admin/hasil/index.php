@@ -23,12 +23,21 @@ $asset_depth = 3;
     <div class="card-custom">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
             <div><h5 class="mb-1">Perangkingan Penerima Bantuan PIP</h5><p class="text-muted mb-0 small">Metode Weighted Product (WP)</p></div>
-            <?php if ($jumlah_data > 0): ?><button onclick="window.print()" class="btn-add no-print"><i class="fa fa-print me-1"></i>Cetak</button><?php endif; ?>
+            <?php if ($jumlah_data > 0): ?>
+            <form action="cetak_pdf.php" method="GET" target="_blank" class="d-flex align-items-center gap-2 no-print">
+                <select name="filter" class="form-select" style="width: auto; height: 42px;">
+                    <option value="semua">Semua Status</option>
+                    <option value="layak">Layak</option>
+                    <option value="tidak_layak">Tidak Layak</option>
+                </select>
+                <button type="submit" class="btn-add"><i class="fa fa-file-pdf me-1"></i>Ekspor PDF</button>
+            </form>
+            <?php endif; ?>
         </div>
         <div class="table-responsive">
             <?php if ($jumlah_data > 0): ?>
             <table class="table table-bordered">
-                <thead><tr><th width="8%">Ranking</th><th width="10%">Kode</th><th width="15%">Kelas</th><th>Nama Siswa</th><th width="12%">Nilai S</th><th width="12%">Nilai V</th><th width="12%">Status</th></tr></thead>
+                <thead><tr><th width="8%">Ranking</th><th width="10%">Kode</th><th width="15%">Kelas</th><th>Nama Siswa</th><th width="12%">Nilai S</th><th width="12%">Nilai V</th><th width="20%">Status</th></tr></thead>
                 <tbody>
                 <?php while ($row = mysqli_fetch_assoc($query_ranking)): ?>
                     <tr>
@@ -38,7 +47,17 @@ $asset_depth = 3;
                         <td style="text-align:left;padding-left:15px;"><strong><?php echo htmlspecialchars($row['nama']); ?></strong></td>
                         <td><?php echo number_format($row['nilai_s'], 5); ?></td>
                         <td><strong><?php echo number_format($row['nilai_v'], 5); ?></strong></td>
-                        <td><?php echo ($row['ranking']<=3)?'<span class="badge bg-success p-2">Layak</span>':'<span class="badge bg-warning text-dark p-2">Cadangan</span>'; ?></td>
+                        <td>
+                            <?php
+                            if ($row['status_verifikasi'] === 'menunggu_penilaian') {
+                                echo '<span class="badge-menunggu"><i class="bi bi-hourglass-split me-1"></i>Menunggu Penilaian Ketua</span>';
+                            } elseif ($row['status_verifikasi'] === 'layak') {
+                                echo '<span class="badge-layak"><i class="bi bi-check-circle-fill me-1"></i>Layak</span>';
+                            } else {
+                                echo '<span class="badge-tidak-layak"><i class="bi bi-x-circle-fill me-1"></i>Tidak Layak</span>';
+                            }
+                            ?>
+                        </td>
                     </tr>
                 <?php endwhile; ?>
                 </tbody>

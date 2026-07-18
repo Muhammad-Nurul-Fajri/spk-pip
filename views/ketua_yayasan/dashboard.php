@@ -5,24 +5,29 @@ require_role('ketua_yayasan');
 
 // === SUMMARY CARDS DATA ===
 $total_pendaftar = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as c FROM siswa"))['c'];
-$total_layak = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as c FROM hasil_wp WHERE ranking <= 3"))['c'];
-$total_tidak = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as c FROM hasil_wp WHERE ranking > 3"))['c'];
+$total_layak = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as c FROM hasil_wp WHERE status_verifikasi = 'layak'"))['c'];
+$total_tidak = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as c FROM hasil_wp WHERE status_verifikasi = 'tidak_layak'"))['c'];
+$total_pending = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as c FROM hasil_wp WHERE status_verifikasi = 'menunggu_penilaian'"))['c'];
 $total_hasil = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) as c FROM hasil_wp"))['c'];
 
 // === PIE CHART: Eligible vs Ineligible ===
-// Using top 3 as "Layak" threshold (adjustable)
 $pie_layak = $total_layak;
-$pie_tidak = max(0, $total_hasil - $total_layak);
+$pie_tidak = $total_tidak;
+$pie_pending = $total_pending;
 
 // === BAR CHART: Top 10 students by Vi score ===
 $top10 = [];
 $tq = mysqli_query($koneksi, "SELECT h.nilai_v, s.nama FROM hasil_wp h JOIN siswa s ON h.id_siswa=s.id ORDER BY h.ranking ASC LIMIT 10");
-while ($r = mysqli_fetch_assoc($tq)) $top10[] = $r;
+if ($tq) {
+    while ($r = mysqli_fetch_assoc($tq)) $top10[] = $r;
+}
 
 // === LINE CHART: PIP recipients per year ===
 $yearly = [];
 $yq = mysqli_query($koneksi, "SELECT tahun_ajaran, jumlah_penerima FROM rekap_pip_tahunan ORDER BY tahun_ajaran ASC");
-while ($r = mysqli_fetch_assoc($yq)) $yearly[] = $r;
+if ($yq) {
+    while ($r = mysqli_fetch_assoc($yq)) $yearly[] = $r;
+}
 // Add current year from hasil_wp
 $current_year_count = $total_layak;
 $yearly[] = ['tahun_ajaran' => '2025-2026', 'jumlah_penerima' => $current_year_count];
@@ -30,12 +35,16 @@ $yearly[] = ['tahun_ajaran' => '2025-2026', 'jumlah_penerima' => $current_year_c
 // === BAR CHART: Average score per criterion ===
 $avg_criteria = [];
 $cq = mysqli_query($koneksi, "SELECT k.kode_kriteria, k.nama_kriteria, AVG(p.nilai) as avg_val FROM penilaian p JOIN kriteria k ON p.id_kriteria=k.id GROUP BY k.id ORDER BY k.kode_kriteria");
-while ($r = mysqli_fetch_assoc($cq)) $avg_criteria[] = $r;
+if ($cq) {
+    while ($r = mysqli_fetch_assoc($cq)) $avg_criteria[] = $r;
+}
 
 // === FULL RANKING TABLE ===
 $ranking_data = [];
 $rq = mysqli_query($koneksi, "SELECT h.*, s.nama, s.kode_alternatif, s.kelas FROM hasil_wp h JOIN siswa s ON h.id_siswa=s.id ORDER BY h.ranking ASC");
-while ($r = mysqli_fetch_assoc($rq)) $ranking_data[] = $r;
+if ($rq) {
+    while ($r = mysqli_fetch_assoc($rq)) $ranking_data[] = $r;
+}
 
 $page_title = 'Dashboard Ketua Yayasan';
 $active_menu = 'dashboard';
@@ -80,15 +89,15 @@ $asset_depth = 2;
         <div class="col-md-6 col-lg-3">
             <div class="summary-card sc-red">
                 <i class="fa fa-circle-xmark sc-icon"></i>
-                <h3><?php echo $pie_tidak; ?></h3>
-                <p>Tidak Layak / Cadangan</p>
+                <h3><?php echo $total_tidak; ?></h3>
+                <p>Tidak Layak Menerima</p>
             </div>
         </div>
         <div class="col-md-6 col-lg-3">
             <div class="summary-card sc-orange">
-                <i class="fa fa-chart-line sc-icon"></i>
-                <h3><?php echo $total_hasil; ?></h3>
-                <p>Sudah Diproses WP</p>
+                <i class="fa fa-hourglass-split sc-icon"></i>
+                <h3><?php echo $total_pending; ?></h3>
+                <p>Menunggu Penilaian</p>
             </div>
         </div>
     </div>
@@ -177,11 +186,15 @@ $asset_depth = 2;
                         <td><?php echo number_format($row['nilai_s'], 5); ?></td>
                         <td><strong><?php echo number_format($row['nilai_v'], 5); ?></strong></td>
                         <td>
-                            <?php if ($row['ranking'] <= 3): ?>
-                                <span class="badge bg-success p-2">Layak</span>
-                            <?php else: ?>
-                                <span class="badge bg-warning text-dark p-2">Cadangan</span>
-                            <?php endif; ?>
+                            <?php
+                            if ($row['status_verifikasi'] === 'menunggu_penilaian') {
+                                echo '<span class="badge-menunggu"><i class="bi bi-hourglass-split me-1"></i>Menunggu</span>';
+                            } elseif ($row['status_verifikasi'] === 'layak') {
+                                echo '<span class="badge-layak"><i class="bi bi-check-circle-fill me-1"></i>Layak</span>';
+                            } else {
+                                echo '<span class="badge-tidak-layak"><i class="bi bi-x-circle-fill me-1"></i>Tidak Layak</span>';
+                            }
+                            ?>
                         </td>
                     </tr>
                     <?php endforeach; ?>
@@ -205,10 +218,10 @@ $asset_depth = 2;
 new Chart(document.getElementById('chartPie'), {
     type: 'doughnut',
     data: {
-        labels: ['Layak', 'Tidak Layak / Cadangan'],
+        labels: ['Layak', 'Tidak Layak', 'Menunggu Penilaian'],
         datasets: [{
-            data: [<?php echo $pie_layak; ?>, <?php echo $pie_tidak; ?>],
-            backgroundColor: ['#43a047', '#ef5350'],
+            data: [<?php echo $pie_layak; ?>, <?php echo $pie_tidak; ?>, <?php echo $pie_pending; ?>],
+            backgroundColor: ['#2e7d32', '#c62828', '#ef6c00'],
             borderWidth: 2, borderColor: '#fff'
         }]
     },
