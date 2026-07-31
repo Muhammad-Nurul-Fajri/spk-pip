@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 📚 SPK-PIP — Sistem Pendukung Keputusan Penerima PIP
 
 > Sistem Pendukung Keputusan (SPK) untuk menentukan penerima bantuan **Program Indonesia Pintar (PIP)** menggunakan metode **Weighted Product (WP)**.
@@ -213,3 +214,7 @@ Proyek ini dibuat untuk keperluan akademik / tugas akhir.
   <b>SPK-PIP</b> — Sistem Pendukung Keputusan Penerima Program Indonesia Pintar<br>
   Metode Weighted Product (WP) · PHP · MySQL
 </p>
+=======
+# spk-pip
+Aplikasi Seleksi Besiswa PIP 
+>>>>>>> ebacacb793a0936edfa2c0f77034f89d3c6df59d
