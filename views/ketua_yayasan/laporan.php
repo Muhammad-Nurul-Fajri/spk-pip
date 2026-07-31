@@ -64,7 +64,7 @@ $asset_depth = 2;
         <h3>PONDOK PESANTREN H. MAQBUL HASIBUAN</h3>
         <p>Sibuhuan, Padang Lawas — Sumatera Utara</p>
         <h3 style="margin-top:10px;">LAPORAN HASIL SELEKSI PENERIMA BANTUAN PIP</h3>
-        <p>Tahun Ajaran 2025-2026 — Metode Weighted Product (WP)</p>
+        <p>Tahun Ajaran 2025-2026 — Metode AHP &amp; Weighted Product (WP)</p>
     </div>
 
     <div class="card-custom">

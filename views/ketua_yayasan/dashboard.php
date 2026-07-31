@@ -203,7 +203,7 @@ $asset_depth = 2;
             <?php else: ?>
                 <div class="text-center py-4 text-muted">
                     <i class="fa fa-trophy mb-2" style="font-size:36px;color:#ddd;"></i>
-                    <p>Belum ada hasil perhitungan. Hubungi admin untuk melakukan proses WP.</p>
+                    <p>Belum ada hasil perhitungan. Hubungi admin untuk melakukan proses AHP + WP.</p>
                 </div>
             <?php endif; ?>
         </div>

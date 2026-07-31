@@ -38,7 +38,7 @@ $base_root = '../../';
 
     <!-- MENU CARDS -->
     <div class="row g-3 mb-3">
-        <div class="col-md-6 col-lg-4">
+        <div class="col-md-6 col-lg-3">
             <a href="kriteria/index.php" style="text-decoration:none;">
                 <div class="menu-card border-green">
                     <i class="fa fa-list card-icon"></i>
@@ -47,7 +47,7 @@ $base_root = '../../';
                 </div>
             </a>
         </div>
-        <div class="col-md-6 col-lg-4">
+        <div class="col-md-6 col-lg-3">
             <a href="sub_kriteria/index_subkriteria.php" style="text-decoration:none;">
                 <div class="menu-card border-blue">
                     <i class="fa fa-layer-group card-icon"></i>
@@ -56,7 +56,7 @@ $base_root = '../../';
                 </div>
             </a>
         </div>
-        <div class="col-md-6 col-lg-4">
+        <div class="col-md-6 col-lg-3">
             <a href="alternatif/index.php" style="text-decoration:none;">
                 <div class="menu-card border-orange">
                     <i class="fa fa-user-graduate card-icon"></i>
@@ -65,7 +65,7 @@ $base_root = '../../';
                 </div>
             </a>
         </div>
-        <div class="col-md-6 col-lg-4">
+        <div class="col-md-6 col-lg-3">
             <a href="penilaian/index.php" style="text-decoration:none;">
                 <div class="menu-card border-red">
                     <i class="fa fa-check-circle card-icon"></i>
@@ -74,7 +74,25 @@ $base_root = '../../';
                 </div>
             </a>
         </div>
-        <div class="col-md-6 col-lg-4">
+        <div class="col-md-6 col-lg-3">
+            <a href="perbandingan/index.php" style="text-decoration:none;">
+                <div class="menu-card border-purple">
+                    <i class="fa fa-balance-scale card-icon"></i>
+                    <h5>Perbandingan AHP</h5>
+                    <p>Matriks perbandingan Saaty</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <a href="ahp/index.php" style="text-decoration:none;">
+                <div class="menu-card border-teal">
+                    <i class="fa fa-chart-pie card-icon"></i>
+                    <h5>Hasil Bobot AHP</h5>
+                    <p>Uji konsistensi (CR ≤ 0.10)</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-3">
             <a href="perhitungan/index.php" style="text-decoration:none;">
                 <div class="menu-card border-purple">
                     <i class="fa fa-calculator card-icon"></i>
@@ -83,7 +101,7 @@ $base_root = '../../';
                 </div>
             </a>
         </div>
-        <div class="col-md-6 col-lg-4">
+        <div class="col-md-6 col-lg-3">
             <a href="hasil/index.php" style="text-decoration:none;">
                 <div class="menu-card border-teal">
                     <i class="fa fa-trophy card-icon"></i>
@@ -105,8 +123,8 @@ $base_root = '../../';
     <div class="welcome-box">
         <h1>Selamat Datang, Admin!</h1>
         <p class="description">
-            Sistem Pendukung Keputusan (SPK) ini menggunakan metode <strong>Weighted Product (WP)</strong> untuk menentukan siswa yang layak menerima bantuan <strong>Program Indonesia Pintar (PIP)</strong>. 
-            Sistem ini mengevaluasi setiap alternatif (siswa) berdasarkan 6 kriteria: Pekerjaan Orang Tua, Penghasilan Orang Tua, Jumlah Tanggungan, Status Kartu Kemiskinan, Nilai Akhir Semester, dan Hafalan Al-Qur'an.
+            Sistem Pendukung Keputusan (SPK) ini mengombinasikan metode <strong>Analytical Hierarchy Process (AHP)</strong> untuk pembobotan kriteria secara teruji (CR ≤ 0.10) dan <strong>Weighted Product (WP)</strong> untuk pembobotan &amp; perangkingan alternatif siswa penerima <strong>Program Indonesia Pintar (PIP)</strong>. 
+            Sistem mengevaluasi setiap alternatif berdasarkan 6 kriteria: Pekerjaan Orang Tua, Penghasilan Orang Tua, Jumlah Tanggungan, Status Kartu Kemiskinan, Nilai Akhir Semester, dan Hafalan Al-Qur'an.
         </p>
         <p class="school">
             Pondok Pesantren H. Maqbul Hasibuan — Sibuhuan, Padang Lawas, Sumatera Utara

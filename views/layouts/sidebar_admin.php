@@ -23,8 +23,11 @@ $base_root   = $base_root ?? '../../../';
         <li><a href="<?php echo $base_admin; ?>sub_kriteria/index_subkriteria.php" <?php echo ($active_menu=='sub_kriteria')?'class="active"':''; ?>><i class="fa fa-layer-group"></i> Data Sub Kriteria</a></li>
         <li><a href="<?php echo $base_admin; ?>alternatif/index.php" <?php echo ($active_menu=='alternatif')?'class="active"':''; ?>><i class="fa fa-user-graduate"></i> Data Alternatif</a></li>
         <li><a href="<?php echo $base_admin; ?>penilaian/index.php" <?php echo ($active_menu=='penilaian')?'class="active"':''; ?>><i class="fa fa-check-circle"></i> Data Penilaian</a></li>
-        <li><a href="<?php echo $base_admin; ?>perhitungan/index.php" <?php echo ($active_menu=='perhitungan')?'class="active"':''; ?>><i class="fa fa-calculator"></i> Data Perhitungan</a></li>
+        <li><a href="<?php echo $base_admin; ?>perbandingan/index.php" <?php echo ($active_menu=='perbandingan')?'class="active"':''; ?>><i class="fa fa-balance-scale"></i> Perbandingan AHP</a></li>
+        <li><a href="<?php echo $base_admin; ?>ahp/index.php" <?php echo ($active_menu=='ahp')?'class="active"':''; ?>><i class="fa fa-chart-pie"></i> Hasil Bobot AHP</a></li>
+        <li><a href="<?php echo $base_admin; ?>perhitungan/index.php" <?php echo ($active_menu=='perhitungan')?'class="active"':''; ?>><i class="fa fa-calculator"></i> Perhitungan WP</a></li>
         <li><a href="<?php echo $base_admin; ?>hasil/index.php" <?php echo ($active_menu=='hasil')?'class="active"':''; ?>><i class="fa fa-trophy"></i> Data Hasil Akhir</a></li>
+        <li><a href="<?php echo $base_admin; ?>laporan_spk/index.php" <?php echo ($active_menu=='laporan_spk')?'class="active"':''; ?>><i class="fa fa-file-lines"></i> Laporan Lengkap SPK</a></li>
         <li><a href="<?php echo $base_admin; ?>user/index.php" <?php echo ($active_menu=='user')?'class="active"':''; ?>><i class="fa fa-users"></i> Data User</a></li>
         <li><a href="<?php echo $base_admin; ?>pengumuman/index.php" <?php echo ($active_menu=='pengumuman')?'class="active"':''; ?>><i class="fa fa-bullhorn"></i> Pengumuman</a></li>
         <li><a href="<?php echo $base_root; ?>logout.php"><i class="fa fa-right-from-bracket"></i> Logout</a></li>

@@ -22,7 +22,7 @@ $asset_depth = 3;
     </div>
     <div class="card-custom">
         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-            <div><h5 class="mb-1">Perangkingan Penerima Bantuan PIP</h5><p class="text-muted mb-0 small">Metode Weighted Product (WP)</p></div>
+            <div><h5 class="mb-1">Perangkingan Penerima Bantuan PIP</h5><p class="text-muted mb-0 small">Metode Analytical Hierarchy Process (AHP) &amp; Weighted Product (WP)</p></div>
             <?php if ($jumlah_data > 0): ?>
             <form action="cetak_pdf.php" method="GET" target="_blank" class="d-flex align-items-center gap-2 no-print">
                 <select name="filter" class="form-select" style="width: auto; height: 42px;">
