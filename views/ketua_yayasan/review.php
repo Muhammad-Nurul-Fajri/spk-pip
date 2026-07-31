@@ -174,11 +174,11 @@ $asset_depth = 2;
                         </div>
                         <div class="text-end">
                             <p class="text-muted mb-1 small">Nilai Preferensi (V)</p>
-                            <h4 class="fw-bold mb-0 text-dark"><?php echo number_format($siswa['nilai_v'], 5); ?></h4>
+                            <h4 class="fw-bold mb-0 text-dark"><?php echo number_format(floatval($siswa['nilai_v'] ?? 0), 5); ?></h4>
                         </div>
                         <div class="text-end">
                             <p class="text-muted mb-1 small">Nilai Vektor S</p>
-                            <h5 class="mb-0 text-secondary"><?php echo number_format($siswa['nilai_s'], 5); ?></h5>
+                            <h5 class="mb-0 text-secondary"><?php echo number_format(floatval($siswa['nilai_s'] ?? 0), 5); ?></h5>
                         </div>
                     </div>
 

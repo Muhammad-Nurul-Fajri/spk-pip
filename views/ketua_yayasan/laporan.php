@@ -91,8 +91,8 @@ $asset_depth = 2;
                         <td><?php echo htmlspecialchars($row['nis'] ?? '-'); ?></td>
                         <td style="text-align:left;padding-left:12px;"><strong><?php echo htmlspecialchars($row['nama']); ?></strong></td>
                         <td><?php echo htmlspecialchars($row['kelas']); ?></td>
-                        <td><?php echo number_format($row['nilai_s'], 5); ?></td>
-                        <td><?php echo number_format($row['nilai_v'], 5); ?></td>
+                        <td><?php echo number_format(floatval($row['nilai_s'] ?? 0), 5); ?></td>
+                        <td><?php echo number_format(floatval($row['nilai_v'] ?? 0), 5); ?></td>
                         <td>
                             <?php
                             if ($row['status_verifikasi'] === 'menunggu_penilaian') {

@@ -196,8 +196,8 @@ $logo_path = '../../public/assets/img/logo.png';
                             <td><?php echo htmlspecialchars($row['nis']); ?> / <?php echo htmlspecialchars($row['nisn'] ?: '-'); ?></td>
                             <td class="text-start"><strong><?php echo htmlspecialchars($row['nama']); ?></strong></td>
                             <td><?php echo htmlspecialchars($row['kelas']); ?></td>
-                            <td><?php echo number_format($row['nilai_s'], 5); ?></td>
-                            <td><strong><?php echo number_format($row['nilai_v'], 5); ?></strong></td>
+                            <td><?php echo number_format(floatval($row['nilai_s'] ?? 0), 5); ?></td>
+                            <td><strong><?php echo number_format(floatval($row['nilai_v'] ?? 0), 5); ?></strong></td>
                             <td>
                                 <?php
                                 if ($row['status_verifikasi'] === 'menunggu_penilaian') {

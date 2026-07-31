@@ -114,22 +114,26 @@ $logo_path = '../../../public/assets/img/logo.png';
                 </thead>
                 <tbody>
                     <?php 
-                    $sorted = $wp_res['siswa'];
+                    $sorted = $wp_res['siswa'] ?? [];
                     usort($sorted, function($a, $b) use ($wp_res) {
-                        return ($wp_res['ranking'][$a['id']] ?? 999) - ($wp_res['ranking'][$b['id']] ?? 999);
+                        $rA = $wp_res['ranking'][$a['id']] ?? 9999;
+                        $rB = $wp_res['ranking'][$b['id']] ?? 9999;
+                        return $rA - $rB;
                     });
-                    $no = 1;
                     foreach ($sorted as $siswa): 
-                        $r = $wp_res['ranking'][$siswa['id']] ?? '-';
+                        $s_id = $siswa['id'] ?? 0;
+                        $r = $wp_res['ranking'][$s_id] ?? '-';
+                        $v_s = $wp_res['vektor_s'][$s_id] ?? null;
+                        $v_v = $wp_res['vektor_v'][$s_id] ?? null;
                     ?>
                         <tr>
-                            <td><strong><?php echo $r; ?></strong></td>
-                            <td><?php echo htmlspecialchars($siswa['kode_alternatif']); ?></td>
-                            <td><?php echo htmlspecialchars($siswa['nis']); ?> / <?php echo htmlspecialchars($siswa['nisn'] ?: '-'); ?></td>
-                            <td class="text-start"><strong><?php echo htmlspecialchars($siswa['nama']); ?></strong></td>
-                            <td><?php echo htmlspecialchars($siswa['kelas']); ?></td>
-                            <td><?php echo number_format($wp_res['vektor_s'][$siswa['id']], 5); ?></td>
-                            <td><strong><?php echo number_format($wp_res['vektor_v'][$siswa['id']], 5); ?></strong></td>
+                            <td><strong><?php echo htmlspecialchars($r); ?></strong></td>
+                            <td><?php echo htmlspecialchars($siswa['kode_alternatif'] ?? '-'); ?></td>
+                            <td><?php echo htmlspecialchars($siswa['nis'] ?? '-'); ?> / <?php echo htmlspecialchars($siswa['nisn'] ?: '-'); ?></td>
+                            <td class="text-start"><strong><?php echo htmlspecialchars($siswa['nama'] ?? '-'); ?></strong></td>
+                            <td><?php echo htmlspecialchars($siswa['kelas'] ?? '-'); ?></td>
+                            <td><?php echo ($v_s !== null) ? number_format(floatval($v_s), 5) : '-'; ?></td>
+                            <td><strong><?php echo ($v_v !== null) ? number_format(floatval($v_v), 5) : '-'; ?></strong></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

@@ -90,28 +90,37 @@ $asset_depth = 3;
                     </thead>
                     <tbody>
                         <?php
-                        $sorted = $wp_res['siswa'];
+                        $sorted = $wp_res['siswa'] ?? [];
                         usort($sorted, function($a, $b) use ($wp_res) {
-                            return ($wp_res['ranking'][$a['id']] ?? 999) - ($wp_res['ranking'][$b['id']] ?? 999);
+                            $rA = $wp_res['ranking'][$a['id']] ?? 9999;
+                            $rB = $wp_res['ranking'][$b['id']] ?? 9999;
+                            return $rA - $rB;
                         });
+                        $top_badges = [1 => 'danger', 2 => 'warning text-dark', 3 => 'success'];
                         foreach ($sorted as $siswa):
-                            $r = $wp_res['ranking'][$siswa['id']] ?? '-';
+                            $s_id = $siswa['id'] ?? 0;
+                            $r = $wp_res['ranking'][$s_id] ?? null;
+                            $v_s = $wp_res['vektor_s'][$s_id] ?? null;
+                            $v_v = $wp_res['vektor_v'][$s_id] ?? null;
+                            $is_ranked = is_numeric($r) && intval($r) > 0;
                         ?>
                             <tr>
                                 <td>
-                                    <?php if ($r <= 3): ?>
-                                        <span class="badge bg-<?php echo ['','danger','warning text-dark','success'][$r]; ?> fs-6">
-                                            <?php if($r==1): ?><i class="fa fa-trophy"></i> <?php endif; echo $r; ?>
+                                    <?php if ($is_ranked && intval($r) <= 3 && isset($top_badges[intval($r)])): ?>
+                                        <span class="badge bg-<?php echo $top_badges[intval($r)]; ?> fs-6">
+                                            <?php if(intval($r) === 1): ?><i class="fa fa-trophy"></i> <?php endif; echo htmlspecialchars($r); ?>
                                         </span>
+                                    <?php elseif ($is_ranked): ?>
+                                        <span class="badge bg-secondary"><?php echo htmlspecialchars($r); ?></span>
                                     <?php else: ?>
-                                        <span class="badge bg-secondary"><?php echo $r; ?></span>
+                                        <span class="badge bg-light text-muted border">-</span>
                                     <?php endif; ?>
                                 </td>
-                                <td><?php echo htmlspecialchars($siswa['kode_alternatif']); ?></td>
-                                <td class="text-start ps-3"><strong><?php echo htmlspecialchars($siswa['nama']); ?></strong></td>
+                                <td><?php echo htmlspecialchars($siswa['kode_alternatif'] ?? '-'); ?></td>
+                                <td class="text-start ps-3"><strong><?php echo htmlspecialchars($siswa['nama'] ?? '-'); ?></strong></td>
                                 <td><?php echo htmlspecialchars($siswa['kelas'] ?: '-'); ?></td>
-                                <td><?php echo number_format($wp_res['vektor_s'][$siswa['id']], 5); ?></td>
-                                <td class="fw-bold text-success"><?php echo number_format($wp_res['vektor_v'][$siswa['id']], 5); ?></td>
+                                <td><?php echo ($v_s !== null) ? number_format(floatval($v_s), 5) : '<span class="text-muted small">Belum Lengkap</span>'; ?></td>
+                                <td class="fw-bold text-success"><?php echo ($v_v !== null) ? number_format(floatval($v_v), 5) : '<span class="text-muted small">Belum Lengkap</span>'; ?></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
