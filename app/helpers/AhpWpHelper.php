@@ -376,10 +376,16 @@ class AhpWpHelper {
             $ranking[$id] = $rank++;
         }
 
+        // Filter list of calculated students only
+        $siswa_calculated = array_values(array_filter($siswa_arr, function($s) use ($vektor_s) {
+            return isset($vektor_s[$s['id']]);
+        }));
+
         return [
             'can_calculate' => true,
             'kriteria' => $kriteria,
             'siswa' => $siswa_arr,
+            'siswa_calculated' => $siswa_calculated,
             'penilaian_map' => $penilaian_map,
             'ahp_weights' => $ahp_weights,
             'bobot_normal' => $bobot_normal,

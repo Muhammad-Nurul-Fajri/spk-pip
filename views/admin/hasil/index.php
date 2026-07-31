@@ -39,14 +39,28 @@ $asset_depth = 3;
             <table class="table table-bordered">
                 <thead><tr><th width="8%">Ranking</th><th width="10%">Kode</th><th width="15%">Kelas</th><th>Nama Siswa</th><th width="12%">Nilai S</th><th width="12%">Nilai V</th><th width="20%">Status</th></tr></thead>
                 <tbody>
-                <?php while ($row = mysqli_fetch_assoc($query_ranking)): ?>
+                <?php 
+                $top_badges = [1 => 'danger', 2 => 'warning text-dark', 3 => 'success'];
+                while ($row = mysqli_fetch_assoc($query_ranking)): 
+                    $r = intval($row['ranking'] ?? 0);
+                ?>
                     <tr>
-                        <td><?php if($row['ranking']<=3): ?><span class="badge bg-<?php echo ['','danger','warning text-dark','success'][$row['ranking']]; ?> fs-6"><?php if($row['ranking']==1): ?><i class="fa fa-trophy"></i> <?php endif; echo $row['ranking']; ?></span><?php else: ?><span class="badge bg-secondary"><?php echo $row['ranking']; ?></span><?php endif; ?></td>
-                        <td><?php echo htmlspecialchars($row['kode_alternatif']); ?></td>
-                        <td><?php echo htmlspecialchars($row['kelas']); ?></td>
-                        <td style="text-align:left;padding-left:15px;"><strong><?php echo htmlspecialchars($row['nama']); ?></strong></td>
-                        <td><?php echo number_format($row['nilai_s'], 5); ?></td>
-                        <td><strong><?php echo number_format($row['nilai_v'], 5); ?></strong></td>
+                        <td>
+                            <?php if ($r >= 1 && $r <= 3 && isset($top_badges[$r])): ?>
+                                <span class="badge bg-<?php echo $top_badges[$r]; ?> fs-6">
+                                    <?php if($r === 1): ?><i class="fa fa-trophy"></i> <?php endif; echo $r; ?>
+                                </span>
+                            <?php elseif ($r > 0): ?>
+                                <span class="badge bg-secondary"><?php echo $r; ?></span>
+                            <?php else: ?>
+                                <span class="badge bg-light text-muted border">-</span>
+                            <?php endif; ?>
+                        </td>
+                        <td><?php echo htmlspecialchars($row['kode_alternatif'] ?? '-'); ?></td>
+                        <td><?php echo htmlspecialchars($row['kelas'] ?? '-'); ?></td>
+                        <td style="text-align:left;padding-left:15px;"><strong><?php echo htmlspecialchars($row['nama'] ?? '-'); ?></strong></td>
+                        <td><?php echo number_format(floatval($row['nilai_s'] ?? 0), 5); ?></td>
+                        <td><strong><?php echo number_format(floatval($row['nilai_v'] ?? 0), 5); ?></strong></td>
                         <td>
                             <?php
                             if ($row['status_verifikasi'] === 'menunggu_penilaian') {
