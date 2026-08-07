@@ -80,10 +80,7 @@ $asset_depth = 3;
         <div class="card-custom text-center py-5">
             <i class="fa fa-triangle-exclamation text-warning mb-3" style="font-size:50px;"></i>
             <h5>Proses Perhitungan Ditolak</h5>
-            <p class="text-muted mb-4"><?php echo htmlspecialchars($wp_res['message']); ?></p>
-            <a href="../perbandingan/index.php" class="btn btn-success-custom">
-                <i class="fa fa-balance-scale me-1"></i> Kelola Perbandingan AHP
-            </a>
+            <p class="text-muted mb-0"><?php echo htmlspecialchars($wp_res['message']); ?></p>
         </div>
     <?php else: ?>
 
@@ -96,9 +93,6 @@ $asset_depth = 3;
                     Bobot kriteria bersumber dari matriks AHP konsisten (CR = <?php echo number_format($wp_res['consistency']['cr'], 4); ?> ≤ 0.10).
                 </p>
             </div>
-            <a href="../ahp/index.php" class="btn btn-sm btn-outline-success" style="font-size:12px;">
-                <i class="fa fa-chart-pie me-1"></i> Detail Matriks AHP
-            </a>
         </div>
     </div>
 

@@ -75,24 +75,6 @@ $base_root = '../../';
             </a>
         </div>
         <div class="col-md-6 col-lg-3">
-            <a href="perbandingan/index.php" style="text-decoration:none;">
-                <div class="menu-card border-purple">
-                    <i class="fa fa-balance-scale card-icon"></i>
-                    <h5>Perbandingan AHP</h5>
-                    <p>Matriks perbandingan Saaty</p>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-6 col-lg-3">
-            <a href="ahp/index.php" style="text-decoration:none;">
-                <div class="menu-card border-teal">
-                    <i class="fa fa-chart-pie card-icon"></i>
-                    <h5>Hasil Bobot AHP</h5>
-                    <p>Uji konsistensi (CR ≤ 0.10)</p>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-6 col-lg-3">
             <a href="perhitungan/index.php" style="text-decoration:none;">
                 <div class="menu-card border-purple">
                     <i class="fa fa-calculator card-icon"></i>

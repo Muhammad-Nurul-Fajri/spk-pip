@@ -4,6 +4,10 @@ require_once '../../../config/koneksi.php';
 require_once '../../../app/helpers/AhpWpHelper.php';
 require_role('admin');
 
+// Redirect admin away from hidden AHP weight results page
+header("Location: ../dashboard.php");
+exit;
+
 $ahp_res = AhpWpHelper::processAHP($koneksi);
 
 $pesan_sukses = $_SESSION['ahp_success'] ?? '';

@@ -4,6 +4,10 @@ require_once '../../../config/koneksi.php';
 require_once '../../../app/helpers/AhpWpHelper.php';
 require_role('admin');
 
+// Redirect admin away from hidden AHP comparison page
+header("Location: ../dashboard.php");
+exit;
+
 $pesan_sukses = '';
 $pesan_error  = '';
 
