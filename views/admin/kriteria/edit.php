@@ -11,12 +11,12 @@ $pesan = '';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $kode = trim($_POST['kode_kriteria'] ?? '');
     $nama = trim($_POST['nama_kriteria'] ?? '');
-    $bobot = intval($_POST['bobot'] ?? 0);
+    $bobot = floatval($_POST['bobot'] ?? 0);
     $jenis = $_POST['jenis'] ?? 'benefit';
-    if (empty($kode)||empty($nama)||$bobot<=0) $pesan = 'Semua field wajib!';
+    if (empty($kode)||empty($nama)) $pesan = 'Semua field wajib!';
     else {
         $stmt2 = mysqli_prepare($koneksi, "UPDATE kriteria SET kode_kriteria=?,nama_kriteria=?,bobot=?,jenis=? WHERE id=?");
-        mysqli_stmt_bind_param($stmt2, "ssisi", $kode, $nama, $bobot, $jenis, $id);
+        mysqli_stmt_bind_param($stmt2, "ssdsi", $kode, $nama, $bobot, $jenis, $id);
         if (mysqli_stmt_execute($stmt2)) { header("Location: index.php"); exit; }
         else $pesan = 'Gagal: ' . mysqli_error($koneksi);
         mysqli_stmt_close($stmt2);
@@ -34,7 +34,7 @@ $page_title = 'Edit Kriteria'; $active_menu = 'kriteria'; $asset_depth = 3;
         <form method="POST">
             <div class="mb-3"><label class="form-label fw-bold small">Kode Kriteria</label><input type="text" name="kode_kriteria" class="form-control" required value="<?php echo htmlspecialchars($kriteria['kode_kriteria']); ?>"></div>
             <div class="mb-3"><label class="form-label fw-bold small">Nama Kriteria</label><input type="text" name="nama_kriteria" class="form-control" required value="<?php echo htmlspecialchars($kriteria['nama_kriteria']); ?>"></div>
-            <div class="mb-3"><label class="form-label fw-bold small">Bobot</label><input type="number" name="bobot" class="form-control" min="1" required value="<?php echo $kriteria['bobot']; ?>"></div>
+            <div class="mb-3"><label class="form-label fw-bold small">Normalized AHP Weight</label><input type="number" name="bobot" class="form-control" step="any" required value="<?php echo $kriteria['bobot']; ?>"></div>
             <div class="mb-3"><label class="form-label fw-bold small">Jenis</label>
                 <select name="jenis" class="form-select"><option value="benefit" <?php echo $kriteria['jenis']=='benefit'?'selected':''; ?>>Benefit</option><option value="cost" <?php echo $kriteria['jenis']=='cost'?'selected':''; ?>>Cost</option></select>
             </div>

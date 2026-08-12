@@ -294,28 +294,18 @@ class AhpWpHelper {
     }
 
     /**
-     * Process Weighted Product (WP) using AHP-derived weights
+     * Process Weighted Product (WP) using normalized AHP weights from kriteria.bobot
      */
     public static function processWP($koneksi) {
-        $ahp_data = self::getAhpWeightsFromDb($koneksi);
-        if (!$ahp_data) {
-            return [
-                'can_calculate' => false,
-                'message' => 'Bobot AHP belum tersedia atau status perbandingan matriks belum KONSISTEN (CR > 0.10).'
-            ];
-        }
-
-        $ahp_weights = $ahp_data['weights'];
-
         // Get kriteria
         $kriteria = self::getKriteria($koneksi);
         if (empty($kriteria)) {
             return ['can_calculate' => false, 'message' => 'Data kriteria kosong.'];
         }
 
-        // Get siswa (alternatives)
+        // Get siswa (alternatives) ordered by registration sequence
         $siswa_arr = [];
-        $sq = mysqli_query($koneksi, "SELECT * FROM siswa ORDER BY kode_alternatif ASC");
+        $sq = mysqli_query($koneksi, "SELECT * FROM siswa ORDER BY registration_order ASC, id ASC");
         while ($s = mysqli_fetch_assoc($sq)) $siswa_arr[] = $s;
 
         if (empty($siswa_arr)) {
@@ -329,18 +319,13 @@ class AhpWpHelper {
             $penilaian_map[$p['id_siswa']][$p['id_kriteria']] = floatval($p['nilai']);
         }
 
-        // Step 1: Normalize AHP weights (Wj = Wj / ΣWj) & handle cost (negative weight)
-        $total_ahp_weight = array_sum($ahp_weights);
+        // Use Normalized AHP weights directly from kriteria.bobot
         $bobot_normal = [];
         foreach ($kriteria as $kr) {
-            $w = ($total_ahp_weight > 0) ? ($ahp_weights[$kr['id']] / $total_ahp_weight) : 0;
-            if ($kr['jenis'] == 'cost') {
-                $w = -$w;
-            }
-            $bobot_normal[$kr['id']] = $w;
+            $bobot_normal[$kr['id']] = floatval($kr['bobot']);
         }
 
-        // Step 2: Calculate Vector S (Si = Π xij ^ Wj)
+        // Calculate Vector S (Si = Π xij ^ Wj)
         $vektor_s = [];
         foreach ($siswa_arr as $siswa) {
             $s = 1.0;
@@ -358,7 +343,7 @@ class AhpWpHelper {
             }
         }
 
-        // Step 3: Calculate Preference Value (Vector V = Si / ΣSi)
+        // Calculate Preference Value (Vector V = Si / ΣSi)
         $total_s = array_sum($vektor_s);
         $vektor_v = [];
         if ($total_s > 0) {
@@ -367,7 +352,7 @@ class AhpWpHelper {
             }
         }
 
-        // Step 4: Rank students by descending Vi
+        // Rank students by descending Vi
         $ranking = [];
         $sorted_v = $vektor_v;
         arsort($sorted_v);
@@ -387,13 +372,11 @@ class AhpWpHelper {
             'siswa' => $siswa_arr,
             'siswa_calculated' => $siswa_calculated,
             'penilaian_map' => $penilaian_map,
-            'ahp_weights' => $ahp_weights,
             'bobot_normal' => $bobot_normal,
             'vektor_s' => $vektor_s,
             'total_s' => $total_s,
             'vektor_v' => $vektor_v,
-            'ranking' => $ranking,
-            'consistency' => $ahp_data['consistency']
+            'ranking' => $ranking
         ];
     }
 }

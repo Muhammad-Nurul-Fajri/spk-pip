@@ -37,19 +37,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if (mysqli_stmt_execute($stmt2)) {
                 $id_user = mysqli_insert_id($koneksi);
 
-                // Generate next kode_alternatif
-                $last = mysqli_query($koneksi, "SELECT kode_alternatif FROM siswa ORDER BY id DESC LIMIT 1");
+                // Generate next registration_order & kode_alternatif
+                $last = mysqli_query($koneksi, "SELECT MAX(registration_order) as max_order FROM siswa");
                 $row = mysqli_fetch_assoc($last);
-                if ($row) {
-                    $num = intval(substr($row['kode_alternatif'], 1)) + 1;
-                } else {
-                    $num = 1;
-                }
-                $kode = 'A' . $num;
+                $next_order = ($row && isset($row['max_order'])) ? (intval($row['max_order']) + 1) : 1;
+                $kode = 'A' . $next_order;
 
                 // Create siswa record (draft status — to be completed via pendaftaran form)
-                $stmt3 = mysqli_prepare($koneksi, "INSERT INTO siswa (id_user, kode_alternatif, nama, status_pendaftaran) VALUES (?, ?, ?, 'draft')");
-                mysqli_stmt_bind_param($stmt3, "iss", $id_user, $kode, $nama);
+                $stmt3 = mysqli_prepare($koneksi, "INSERT INTO siswa (id_user, registration_order, kode_alternatif, nama, status_pendaftaran) VALUES (?, ?, ?, ?, 'draft')");
+                mysqli_stmt_bind_param($stmt3, "iiss", $id_user, $next_order, $kode, $nama);
                 mysqli_stmt_execute($stmt3);
                 mysqli_stmt_close($stmt3);
 

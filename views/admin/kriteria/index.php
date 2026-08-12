@@ -21,15 +21,15 @@ $page_title = 'Data Kriteria'; $active_menu = 'kriteria'; $asset_depth = 3;
         </div>
         <div class="table-responsive">
             <table class="table table-bordered">
-                <thead><tr><th width="5%">No</th><th width="10%">Kode</th><th>Nama Kriteria</th><th width="12%">Bobot</th><th width="12%">Jenis</th><th width="12%">Aksi</th></tr></thead>
+                <thead><tr><th width="5%">No</th><th width="10%">Kode</th><th>Nama Kriteria</th><th width="12%">Jenis</th><th width="22%">Normalized AHP Weight</th><th width="12%">Aksi</th></tr></thead>
                 <tbody>
                 <?php $no=1; while($row = mysqli_fetch_assoc($kriteria_list)): ?>
                     <tr>
                         <td><?php echo $no++; ?></td>
                         <td><?php echo htmlspecialchars($row['kode_kriteria']); ?></td>
                         <td style="text-align:left;padding-left:15px;"><?php echo htmlspecialchars($row['nama_kriteria']); ?></td>
-                        <td><?php echo $row['bobot']; ?></td>
                         <td><span class="badge-<?php echo $row['jenis']; ?>"><?php echo ucfirst($row['jenis']); ?></span></td>
+                        <td><strong><?php echo number_format(floatval($row['bobot']), 3); ?></strong></td>
                         <td>
                             <a href="edit.php?id=<?php echo $row['id']; ?>" class="btn-icon edit me-1"><i class="fa fa-edit"></i></a>
                             <a href="hapus.php?id=<?php echo $row['id']; ?>" class="btn-icon delete" onclick="return confirm('Hapus kriteria?')"><i class="fa fa-trash"></i></a>
