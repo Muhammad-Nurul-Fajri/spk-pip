@@ -105,8 +105,8 @@ $base_root = '../../';
     <div class="welcome-box">
         <h1>Selamat Datang, Admin!</h1>
         <p class="description">
-            Sistem Pendukung Keputusan (SPK) ini mengombinasikan metode <strong>Analytical Hierarchy Process (AHP)</strong> untuk pembobotan kriteria secara teruji (CR ≤ 0.10) dan <strong>Weighted Product (WP)</strong> untuk pembobotan &amp; perangkingan alternatif siswa penerima <strong>Program Indonesia Pintar (PIP)</strong>. 
-            Sistem mengevaluasi setiap alternatif berdasarkan 6 kriteria: Pekerjaan Orang Tua, Penghasilan Orang Tua, Jumlah Tanggungan, Status Kartu Kemiskinan, Nilai Akhir Semester, dan Hafalan Al-Qur'an.
+            Selamat datang di Sistem Pendukung Keputusan Seleksi Penerima Bantuan <strong>Program Indonesia Pintar (PIP)</strong>. 
+            Gunakan menu navigasi untuk mengelola data kriteria, sub kriteria, data alternatif siswa, penilaian, serta melihat hasil perangkingan kelayakan bantuan.
         </p>
         <p class="school">
             Pondok Pesantren H. Maqbul Hasibuan — Sibuhuan, Padang Lawas, Sumatera Utara
