@@ -14,7 +14,7 @@ if (isset($_GET['verify']) && intval($_GET['verify']) > 0) {
     exit;
 }
 
-$siswa_list = mysqli_query($koneksi, "SELECT * FROM siswa ORDER BY kode_alternatif ASC");
+$siswa_list = mysqli_query($koneksi, "SELECT * FROM siswa ORDER BY registration_order ASC, id ASC");
 $jumlah_data = mysqli_num_rows($siswa_list);
 
 $page_title = 'Data Alternatif';
