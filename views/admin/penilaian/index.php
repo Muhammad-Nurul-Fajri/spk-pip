@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-$siswa_list = mysqli_query($koneksi, "SELECT * FROM siswa ORDER BY kode_alternatif ASC");
+$siswa_list = mysqli_query($koneksi, "SELECT * FROM siswa ORDER BY registration_order ASC, id ASC");
 $jumlah_siswa = mysqli_num_rows($siswa_list);
 $kriteria_list = mysqli_query($koneksi, "SELECT * FROM kriteria ORDER BY kode_kriteria ASC");
 $kriteria_arr = [];

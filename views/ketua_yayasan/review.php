@@ -202,7 +202,7 @@ $asset_depth = 2;
                                     'C3' => $siswa['jumlah_tanggungan'] . ' Orang',
                                     'C4' => $siswa['status_kartu_miskin'],
                                     'C5' => $siswa['nilai_akhir_semester'],
-                                    'C6' => $siswa['hafalan_quran'] . ' Juz',
+                                    'C6' => ($siswa['hafalan_quran'] >= 3 ? '>= 3 Juz' : ($siswa['hafalan_quran'] == 2 ? '2 Juz' : '<= 1 Juz')),
                                 ];
                                 foreach ($penilaian as $pn): 
                                 ?>

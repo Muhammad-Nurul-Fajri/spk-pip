@@ -177,7 +177,7 @@ $asset_depth = 2;
                         <tr><td style="color:#777;text-align:left;">Tanggungan</td><td style="text-align:left;"><?php echo $siswa['jumlah_tanggungan'] ?? '-'; ?> orang</td></tr>
                         <tr><td style="color:#777;text-align:left;">Kartu Kemiskinan</td><td style="text-align:left;"><?php echo htmlspecialchars($siswa['status_kartu_miskin'] ?? '-'); ?></td></tr>
                         <tr><td style="color:#777;text-align:left;">Nilai Akhir</td><td style="text-align:left;"><?php echo $siswa['nilai_akhir_semester'] ?? '-'; ?></td></tr>
-                        <tr><td style="color:#777;text-align:left;">Hafalan Qur'an</td><td style="text-align:left;"><?php echo $siswa['hafalan_quran'] ?? 0; ?> Juz</td></tr>
+                        <tr><td style="color:#777;text-align:left;">Hafalan Qur'an</td><td style="text-align:left;"><?php echo (isset($siswa['hafalan_quran']) ? ($siswa['hafalan_quran'] >= 3 ? '>= 3 Juz' : ($siswa['hafalan_quran'] == 2 ? '2 Juz' : '<= 1 Juz')) : '-'); ?></td></tr>
                     </table>
                 </div>
             </div>

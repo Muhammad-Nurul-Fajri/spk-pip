@@ -197,10 +197,14 @@ $asset_depth = 2;
                     </div>
                     <!-- C6: Hafalan -->
                     <div class="col-md-6">
-                        <label class="form-label fw-bold small">Jumlah Hafalan Al-Qur'an / Juz (C6) <span class="text-danger">*</span></label>
-                        <input type="number" name="hafalan_quran" class="form-control" min="0" max="30" required
-                               value="<?php echo $data['hafalan_quran'] ?? ''; ?>" <?php echo $can_edit?'':'disabled'; ?>>
-                        <small class="text-muted">Jumlah juz yang dihafal</small>
+                        <label class="form-label fw-bold small">Jumlah Hafalan Al-Qur'an (C6) <span class="text-danger">*</span></label>
+                        <select name="hafalan_quran" class="form-select" required <?php echo $can_edit?'':'disabled'; ?>>
+                            <option value="">-- Pilih --</option>
+                            <option value="1" <?php echo (isset($data['hafalan_quran']) && intval($data['hafalan_quran']) <= 1) ? 'selected' : ''; ?>><= 1 Juz</option>
+                            <option value="2" <?php echo (isset($data['hafalan_quran']) && intval($data['hafalan_quran']) == 2) ? 'selected' : ''; ?>>2 Juz</option>
+                            <option value="3" <?php echo (isset($data['hafalan_quran']) && intval($data['hafalan_quran']) >= 3) ? 'selected' : ''; ?>>>= 3 Juz</option>
+                        </select>
+                        <small class="text-muted">Kategori hafalan Al-Qur'an (sub-kriteria C6)</small>
                     </div>
                 </div>
             </div>
@@ -219,9 +223,9 @@ $asset_depth = 2;
                         <?php if (isset($docs['kk'])): ?><small class="text-success"><i class="fa fa-check"></i> <?php echo $docs['kk']; ?></small><?php endif; ?>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold small">KTP Orang Tua</label>
-                        <input type="file" name="ktp_ortu" class="form-control" accept=".pdf,.jpg,.jpeg,.png" style="height:auto;padding:8px;">
-                        <?php if (isset($docs['ktp_ortu'])): ?><small class="text-success"><i class="fa fa-check"></i> <?php echo $docs['ktp_ortu']; ?></small><?php endif; ?>
+                        <label class="form-label fw-bold small">Sertifikat Hafalan Al-Qur'an</label>
+                        <input type="file" name="sertifikat_hafalan" class="form-control" accept=".pdf,.jpg,.jpeg,.png" style="height:auto;padding:8px;">
+                        <?php if (isset($docs['sertifikat_hafalan'])): ?><small class="text-success"><i class="fa fa-check"></i> <?php echo $docs['sertifikat_hafalan']; ?></small><?php endif; ?>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label fw-bold small">Kartu Bantuan (KIP/KKS/PKH)</label>

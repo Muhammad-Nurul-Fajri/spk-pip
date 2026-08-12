@@ -84,22 +84,10 @@ $asset_depth = 3;
         </div>
     <?php else: ?>
 
-    <!-- AHP WEIGHT INTEGRATION BANNER -->
-    <div class="card-custom mb-3 bg-light">
-        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
-            <div>
-                <h6 class="fw-bold mb-1 text-success"><i class="fa fa-shield-check me-2"></i>Integrasi Bobot AHP Terverifikasi</h6>
-                <p class="text-muted mb-0 small">
-                    Bobot kriteria bersumber dari matriks AHP konsisten (CR = <?php echo number_format($wp_res['consistency']['cr'], 4); ?> ≤ 0.10).
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- STEP 1: WEIGHT NORMALIZATION -->
+    <!-- STEP 1: NORMALIZED AHP WEIGHTS -->
     <div class="card-custom">
         <h6 style="color:var(--primary);font-weight:bold;margin-bottom:12px;">
-            <span class="badge bg-success me-2">1</span>Bobot AHP &amp; Normalisasi Bobot WP (W<sub>j</sub>)
+            <span class="badge bg-success me-2">1</span>Bobot AHP Ternormalisasi (W<sub>j</sub>)
         </h6>
         <div class="table-responsive">
             <table class="table table-bordered text-center">
@@ -108,30 +96,23 @@ $asset_depth = 3;
                         <th>Kode</th>
                         <th>Nama Kriteria</th>
                         <th>Jenis</th>
-                        <th>Bobot AHP (Priority Vector)</th>
-                        <th>Normalisasi Bobot (W<sub>j</sub>)</th>
+                        <th>Bobot AHP Ternormalisasi (W<sub>j</sub>)</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php 
-                    $total_ahp_w = array_sum($wp_res['ahp_weights']);
+                    $total_norm_w = 0;
                     foreach ($wp_res['kriteria'] as $kr): 
-                        $ahp_w = $wp_res['ahp_weights'][$kr['id']] ?? 0;
-                        $norm_w = $wp_res['bobot_normal'][$kr['id']] ?? 0;
+                        $norm_w = floatval($kr['bobot']);
+                        $total_norm_w += $norm_w;
                     ?>
                         <tr>
                             <td class="fw-bold"><?php echo htmlspecialchars($kr['kode_kriteria']); ?></td>
                             <td class="text-start ps-3"><?php echo htmlspecialchars($kr['nama_kriteria']); ?></td>
                             <td><span class="badge-<?php echo $kr['jenis']; ?>"><?php echo ucfirst($kr['jenis']); ?></span></td>
-                            <td><?php echo number_format($ahp_w, 4); ?></td>
-                            <td class="fw-bold"><?php echo number_format($norm_w, 4); ?></td>
+                            <td class="fw-bold text-success"><?php echo number_format($norm_w, 3); ?></td>
                         </tr>
                     <?php endforeach; ?>
-                    <tr class="table-secondary fw-bold">
-                        <td colspan="3" class="text-end pe-3">Total Bobot AHP</td>
-                        <td><?php echo number_format($total_ahp_w, 4); ?></td>
-                        <td>—</td>
-                    </tr>
                 </tbody>
             </table>
         </div>

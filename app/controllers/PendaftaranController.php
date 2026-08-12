@@ -89,7 +89,7 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
 }
 
 // Handle document uploads
-$doc_types = ['kk', 'ktp_ortu', 'kartu_bantuan', 'raport'];
+$doc_types = ['kk', 'sertifikat_hafalan', 'kartu_bantuan', 'raport'];
 foreach ($doc_types as $dt) {
     if (isset($_FILES[$dt]) && $_FILES[$dt]['error'] === UPLOAD_ERR_OK) {
         $allowed_doc = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
@@ -149,7 +149,6 @@ mysqli_stmt_close($stmt_user);
 // ===================================================
 // Map application data to sub_kriteria nilai scores
 
-// C1: Pekerjaan Orang Tua → get nilai from sub_kriteria
 $sub_map = [];
 $sq = mysqli_query($koneksi, "SELECT id_kriteria, nama_sub, nilai FROM sub_kriteria ORDER BY id_kriteria, nilai DESC");
 while ($r = mysqli_fetch_assoc($sq)) {
@@ -162,24 +161,22 @@ $scores[1] = $sub_map[1][$pekerjaan_ortu] ?? 1;
 // C2 Penghasilan
 $scores[2] = $sub_map[2][$penghasilan_ortu] ?? 1;
 // C3 Jumlah Tanggungan
-if ($jumlah_tanggungan > 5) $scores[3] = 5;
-elseif ($jumlah_tanggungan >= 4) $scores[3] = 4;
-elseif ($jumlah_tanggungan == 3) $scores[3] = 3;
-elseif ($jumlah_tanggungan == 2) $scores[3] = 2;
+if ($jumlah_tanggungan >= 8) $scores[3] = 5;
+elseif ($jumlah_tanggungan >= 6) $scores[3] = 4;
+elseif ($jumlah_tanggungan >= 4) $scores[3] = 3;
+elseif ($jumlah_tanggungan >= 2) $scores[3] = 2;
 else $scores[3] = 1;
 // C4 Status Kartu
 $scores[4] = $sub_map[4][$status_kartu] ?? 1;
 // C5 Nilai Akhir
-if ($nilai_akhir > 90) $scores[5] = 5;
+if ($nilai_akhir >= 86) $scores[5] = 5;
 elseif ($nilai_akhir >= 81) $scores[5] = 4;
-elseif ($nilai_akhir >= 71) $scores[5] = 3;
-elseif ($nilai_akhir >= 61) $scores[5] = 2;
+elseif ($nilai_akhir >= 76) $scores[5] = 3;
+elseif ($nilai_akhir >= 70) $scores[5] = 2;
 else $scores[5] = 1;
-// C6 Hafalan
-if ($hafalan_quran > 10) $scores[6] = 5;
-elseif ($hafalan_quran >= 6) $scores[6] = 4;
-elseif ($hafalan_quran >= 3) $scores[6] = 3;
-elseif ($hafalan_quran >= 1) $scores[6] = 2;
+// C6 Hafalan (Exact mapping: <=1 Juz -> 1, 2 Juz -> 3, >=3 Juz -> 5)
+if ($hafalan_quran >= 3) $scores[6] = 5;
+elseif ($hafalan_quran == 2) $scores[6] = 3;
 else $scores[6] = 1;
 
 // Upsert penilaian for each criterion
